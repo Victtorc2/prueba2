@@ -1,0 +1,60 @@
+<mat-sidenav-container class="sidenav-container" autosize>
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+
+    <!-- Perfil del usuario -->
+    <div class="user-profile">
+      <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg" alt="Usuario" class="user-avatar" />
+      <div class="user-info">
+        <h4>Usuario</h4>
+        <p>{{ user?.correo }}</p>
+      </div>
+    </div>
+
+    <!-- Menú de navegación -->
+    <mat-nav-list>
+      <ng-container *ngIf="rol === 'ADMIN'">
+        <a mat-list-item routerLink="/admin/inicio" routerLinkActive="active-link"><mat-icon>home</mat-icon> Inicio</a>
+        <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active-link"><mat-icon>dashboard</mat-icon> Dashboard</a>
+        <a mat-list-item routerLink="/admin/productos" routerLinkActive="active-link"><mat-icon>inventory_2</mat-icon> Productos</a>
+        <a mat-list-item routerLink="/admin/inventario" routerLinkActive="active-link"><mat-icon>store</mat-icon> Inventario</a>
+        <a mat-list-item routerLink="/admin/ventas" routerLinkActive="active-link"><mat-icon>point_of_sale</mat-icon> Ventas</a>
+        <a mat-list-item routerLink="/admin/usuarios" routerLinkActive="active-link"><mat-icon>group</mat-icon> Usuarios</a>
+        <a mat-list-item routerLink="/admin/auditoria" routerLinkActive="active-link"><mat-icon>search</mat-icon> Auditoría</a>
+        <a mat-list-item routerLink="/admin/reportes" routerLinkActive="active-link"><mat-icon>bar_chart</mat-icon> Reportes</a>
+      </ng-container>
+
+      <ng-container *ngIf="rol === 'EMPLEADO'">
+        <a mat-list-item routerLink="/empleado/inicio" routerLinkActive="active-link"><mat-icon>home</mat-icon> Inicio</a>
+        <a mat-list-item routerLink="/empleado/inventario" routerLinkActive="active-link"><mat-icon>store</mat-icon> Inventario</a>
+        <a mat-list-item routerLink="/empleado/ventas" routerLinkActive="active-link"><mat-icon>point_of_sale</mat-icon> Ventas</a>
+      </ng-container>
+
+      <mat-divider></mat-divider>
+
+      <button mat-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon> Cerrar sesión
+      </button>
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="topbar" color="primary">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="empresa-nombre" style="margin-left: 16px;">
+        <mat-icon>shopping_cart</mat-icon>
+        SUPERMERCADO RAULITO
+      </div>
+      <span class="spacer"></span>
+      <mat-icon class="notif-icon">notifications</mat-icon>
+    </mat-toolbar>
+
+    <div class="main-content" style="padding: 16px;">
+          <router-outlet></router-outlet>
+
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

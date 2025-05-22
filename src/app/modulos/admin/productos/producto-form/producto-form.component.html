@@ -1,0 +1,30 @@
+<form #form="ngForm" (ngSubmit)="guardar(form)">
+
+  <label>Nombre:</label>
+  <input type="text" name="nombre" [(ngModel)]="producto.nombre" required />
+
+  <label>Código:</label>
+  <input type="text" name="codigo" [(ngModel)]="producto.codigo" required />
+
+  <label>Categoría:</label>
+  <input type="text" name="categoria" [(ngModel)]="producto.categoria" required />
+
+  <label>Stock:</label>
+  <input type="number" name="stock" [(ngModel)]="producto.stock" required min="0" />
+
+  <label>Proveedor:</label>
+  <input type="text" name="proveedor" [(ngModel)]="producto.proveedor" />
+
+  <label>Presentación:</label>
+  <input type="text" name="presentacion" [(ngModel)]="producto.presentacion" />
+
+  <label>Imagen (URL):</label>
+  <input type="text" name="imagen" [(ngModel)]="producto.imagen" />
+
+  <label>Fecha de Vencimiento:</label>
+  <input type="date" name="fechaVencimiento" [(ngModel)]="producto.fechaVencimiento" />
+
+  <button type="submit" [disabled]="form.invalid">{{ esEdicion ? 'Actualizar' : 'Crear' }}</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+
+</form>

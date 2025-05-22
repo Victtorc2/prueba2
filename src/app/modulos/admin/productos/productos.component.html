@@ -1,0 +1,44 @@
+<div class="filtros">
+  <input type="text" placeholder="Buscar por nombre" [(ngModel)]="filtroNombre" />
+  <input type="text" placeholder="Buscar por categoría" [(ngModel)]="filtroCategoria" />
+  <input type="text" placeholder="Buscar por código" [(ngModel)]="filtroCodigo" />
+  <button (click)="buscar()">Buscar</button>
+  <button (click)="limpiarFiltros()">Limpiar</button>
+<button (click)="crearProducto()">Nuevo Producto</button>
+
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Categoría</th>
+      <th>Código</th>
+      <th>Stock</th>
+      <th>Proveedor</th>
+      <th>Presentación</th>
+      <th>Imagen</th>
+      <th>Fecha de Vencimiento</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let producto of productos">
+      <td>{{ producto.nombre }}</td>
+      <td>{{ producto.categoria }}</td>
+      <td>{{ producto.codigo }}</td>
+      <td>{{ producto.stock }}</td>
+      <td>{{ producto.proveedor || '-' }}</td>
+      <td>{{ producto.presentacion || '-' }}</td>
+      <td>
+        <img *ngIf="producto.imagen" [src]="producto.imagen" alt="{{ producto.nombre }}" width="60" />
+        <span *ngIf="!producto.imagen">-</span>
+      </td>
+      <td>{{ producto.fechaVencimiento ? (producto.fechaVencimiento | date:'yyyy-MM-dd') : '-' }}</td>
+      <td>
+        <button [routerLink]="['/admin/productos/editar', producto.id]">Editar</button>
+        <button (click)="eliminarProducto(producto.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
