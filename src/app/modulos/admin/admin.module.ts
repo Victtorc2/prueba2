@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductosComponent } from './productos/productos.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AuditoriaComponent } from './auditoria/auditoria.component';
@@ -15,10 +14,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @NgModule({
   declarations: [
-    DashboardComponent,
     ProductosComponent,
     UsuariosComponent,
     AuditoriaComponent,
@@ -35,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatTableModule,
     MatIconModule,
+    MatButtonModule
   ]
 })
 export class AdminModule { }
