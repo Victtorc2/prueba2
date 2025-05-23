@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { InicioComponent } from './inicio/inicio.component';
+import { InicioComponent } from '../../modulos-compartidos/inicio/inicio.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductosComponent } from './productos/productos.component';
-import { InventarioComponent } from './inventario/inventario.component';
-import { VentasComponent } from './ventas/ventas.component';
+import { InventarioComponent } from '../../modulos-compartidos/inventario/inventario.component';
+import { VentasComponent } from '../../modulos-compartidos/ventas/ventas.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AuditoriaComponent } from './auditoria/auditoria.component';
 import { ReportesComponent } from './reportes/reportes.component';
