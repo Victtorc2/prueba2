@@ -1,31 +1,71 @@
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
+:host {
+  display: block;
+  padding: 24px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+mat-card {
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.mat-form-field {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
-.modal-container {
-  background: white;
-  padding: 20px;
-  border-radius: 6px;
-  width: 400px;
-  max-width: 90%;
-}
-
-.modal-input {
+table {
   width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
 
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+mat-header-row, mat-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+mat-header-cell {
+  font-weight: bold;
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+mat-cell {
+  color: #374151;
+}
+
+mat-card-title {
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.mat-elevation-z2 {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+button[mat-raised-button] mat-icon,
+button[mat-stroked-button] mat-icon {
+  margin-right: 0.3rem;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
 }
