@@ -1,0 +1,67 @@
+.inicio-container {
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.ventas-header {
+  margin-bottom: 1rem;
+}
+
+.ventas-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ventas-header p {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.venta-item {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+
+.venta-item.active {
+  border-color: #1976d2;
+  box-shadow: 0 0 6px rgba(25, 118, 210, 0.3);
+}
+
+.venta-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-muted {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+.venta-detalle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.monto {
+  font-weight: 600;
+}
+
+.text-end {
+  text-align: right;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
