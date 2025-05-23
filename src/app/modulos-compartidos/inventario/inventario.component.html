@@ -49,6 +49,12 @@
         <td mat-cell *matCellDef="let mov"> {{ mov.categoria || '-' }} </td>
       </ng-container>
 
+      <ng-container matColumnDef="precio">
+  <th mat-header-cell *matHeaderCellDef> Precio </th>
+  <td mat-cell *matCellDef="let mov"> S/ {{ mov.precio | number:'1.2-2' }} </td>
+</ng-container>
+
+
       <ng-container matColumnDef="cantidad">
         <th mat-header-cell *matHeaderCellDef> Cantidad </th>
         <td mat-cell *matCellDef="let mov"> {{ mov.cantidad }} </td>

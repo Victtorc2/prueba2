@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./inventario.component.css']
 })
 export class InventarioComponent implements OnInit {
-  columnasTabla: string[] = ['productoNombre', 'categoria', 'cantidad', 'ubicacion', 'observacion', 'tipo', 'fecha', 'acciones'];
+  columnasTabla: string[] = ['productoNombre', 'categoria','precio', 'cantidad', 'ubicacion', 'observacion', 'tipo', 'fecha', 'acciones'];
 
   movimientos: MovimientoInventario[] = [];
   movimientosFiltrados: MovimientoInventario[] = [];
@@ -23,7 +23,7 @@ export class InventarioComponent implements OnInit {
 
   textoBusqueda: string = '';
   indicePestania: number = 0;
-textoCategoria: string = '';
+  textoCategoria: string = '';
 
   editando = false;
   formularioEdicion!: FormGroup;
@@ -33,7 +33,7 @@ textoCategoria: string = '';
     private productoService: ProductoService,
     private authService: AuthService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.usuarioEsAdmin = this.authService.getRole()?.toUpperCase() === 'ADMIN';
@@ -60,7 +60,9 @@ textoCategoria: string = '';
         this.movimientos = movimientos.map(mov => ({
           ...mov,
           productoNombre: mov.productoNombre || 'Sin nombre',
-          categoria: mov.categoria || 'Sin categoría'
+          categoria: mov.categoria || 'Sin categoría',
+          precio: mov.precio, // deja el número como está, aunque sea undefined
+
         }));
         this.aplicarFiltro();
       },
@@ -109,22 +111,22 @@ textoCategoria: string = '';
     this.aplicarFiltro();
   }
 
-aplicarFiltro(): void {
-  let tipoFiltro = '';
-  switch (this.indicePestania) {
-    case 0: tipoFiltro = 'INGRESO'; break;
-    case 1: tipoFiltro = 'SALIDA'; break;
-    case 2: tipoFiltro = 'AJUSTE'; break;
-    case 3: tipoFiltro = ''; break;
-  }
+  aplicarFiltro(): void {
+    let tipoFiltro = '';
+    switch (this.indicePestania) {
+      case 0: tipoFiltro = 'INGRESO'; break;
+      case 1: tipoFiltro = 'SALIDA'; break;
+      case 2: tipoFiltro = 'AJUSTE'; break;
+      case 3: tipoFiltro = ''; break;
+    }
 
-  this.movimientosFiltrados = this.movimientos.filter(mov => {
-    const coincideTipo = tipoFiltro ? mov.tipo === tipoFiltro : true;
-    const coincideProducto = (mov.productoNombre ?? '').toLowerCase().includes(this.textoBusqueda.toLowerCase());
-    const coincideCategoria = (mov.categoria ?? '').toLowerCase().includes(this.textoCategoria.toLowerCase());
-    return coincideTipo && coincideProducto && coincideCategoria;
-  });
-}
+    this.movimientosFiltrados = this.movimientos.filter(mov => {
+      const coincideTipo = tipoFiltro ? mov.tipo === tipoFiltro : true;
+      const coincideProducto = (mov.productoNombre ?? '').toLowerCase().includes(this.textoBusqueda.toLowerCase());
+      const coincideCategoria = (mov.categoria ?? '').toLowerCase().includes(this.textoCategoria.toLowerCase());
+      return coincideTipo && coincideProducto && coincideCategoria;
+    });
+  }
 
   abrirFormularioNuevo(): void {
     this.editando = true;
@@ -152,7 +154,9 @@ aplicarFiltro(): void {
       ...this.formularioEdicion.value,
       productoId: this.productoSeleccionado.id!,
       productoNombre: this.productoSeleccionado.nombre,
-      categoria: this.productoSeleccionado.categoria
+      categoria: this.productoSeleccionado.categoria,
+      precio: this.productoSeleccionado.precio
+
     };
 
     this.productoService.registrarMovimiento(movimiento).subscribe({

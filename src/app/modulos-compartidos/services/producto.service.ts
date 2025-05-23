@@ -7,6 +7,7 @@ export interface Producto {
   nombre: string;
   codigo: string;
   categoria: string;
+  precio: number;
   stock: number;
   proveedor: string;
   presentacion: string;
@@ -24,6 +25,8 @@ export interface MovimientoInventario {
   fecha: string;
   productoNombre?: string;
   categoria?: string;
+  precio?: number; 
+
 }
 
 @Injectable({
