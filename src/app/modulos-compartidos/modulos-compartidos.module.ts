@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AdminRoutingModule } from './admin-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ProductosComponent } from './productos/productos.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
-import { AuditoriaComponent } from './auditoria/auditoria.component';
-import { ReportesComponent } from './reportes/reportes.component';
-import { ProductoFormComponent } from './productos/producto-form/producto-form.component';
+import { ModulosCompartidosRoutingModule } from './modulos-compartidos-routing.module';
+
+import { InicioComponent } from './inicio/inicio.component';
+import { InventarioComponent } from './inventario/inventario.component';
+import { VentasComponent } from './ventas/ventas.component';
+
 import { FormsModule } from '@angular/forms';
 
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,19 +22,13 @@ import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
-    DashboardComponent,
-    ProductosComponent,
-
-    UsuariosComponent,
-    AuditoriaComponent,
-    ReportesComponent,
-    
-    ProductoFormComponent,
-
+    InicioComponent,
+    InventarioComponent,
+    VentasComponent
   ],
   imports: [
     CommonModule,
-    AdminRoutingModule,
+    ModulosCompartidosRoutingModule,
     FormsModule,
 
     MatFormFieldModule,
@@ -45,9 +38,13 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
     MatDividerModule,
 
-    MatTableModule,  
+    MatTableModule,
     MatInputModule
-    
+  ],
+  exports: [
+    InicioComponent,
+    InventarioComponent,
+    VentasComponent
   ]
 })
-export class AdminModule { }
+export class ModulosCompartidosModule { }
