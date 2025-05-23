@@ -13,6 +13,17 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { ProductoFormComponent } from './productos/producto-form/producto-form.component';
 import { FormsModule } from '@angular/forms';
 
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+
+
+
 @NgModule({
   declarations: [
     InicioComponent,
@@ -25,11 +36,22 @@ import { FormsModule } from '@angular/forms';
     ReportesComponent,
     
     ProductoFormComponent,
+
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     FormsModule,
+
+    MatFormFieldModule,
+    MatTabsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+
+    MatTableModule,  
+    MatInputModule
     
   ]
 })

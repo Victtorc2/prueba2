@@ -4,6 +4,7 @@ import { Producto } from '../../admin/productos/models/producto.model';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-producto-list',
   templateUrl: './productos.component.html',

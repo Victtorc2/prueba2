@@ -31,6 +31,7 @@ import { LayoutModule } from './layout/layout.module';
     RouterModule,
     AppRoutingModule,
     LayoutModule,
+    
   ],
   providers: [
     AuthService,
