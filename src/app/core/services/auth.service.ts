@@ -44,14 +44,22 @@ export class AuthService {
    * Retorna el rol guardado
    */
   getRole(): string | null {
-    const role = localStorage.getItem('role');
-    return role ? role.replace('ROLE_', '') : null; // Devuelve ADMIN o EMPLEADO
+  let role = localStorage.getItem('role');
+  if (!role) return null;
+  role = role.trim().toUpperCase(); // Quitar espacios y poner en mayúsculas
+  if (role.startsWith('ROLE_')) {
+    role = role.substring(5); // Quitar el prefijo 'ROLE_'
   }
+  return role; // Ejemplo: "ADMIN" o "EMPLEADO"
+}
+
 
   /**
    * Verifica si hay un token
    */
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
+ isLoggedIn(): boolean {
+  const token = this.getToken();
+  // Puedes agregar aquí una validación extra de expiración si quieres
+  return !!token; 
+}
 }

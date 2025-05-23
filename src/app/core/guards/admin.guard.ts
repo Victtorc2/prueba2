@@ -11,11 +11,7 @@ export class AdminGuard implements CanActivate {
 
 canActivate(): boolean {
   const loggedIn = this.authService.isLoggedIn();
-  let role = this.authService.getRole();
-
-  if (role) {
-    role = role.trim().toUpperCase();
-  }
+  const role = this.authService.getRole();
 
   console.log('AdminGuard - loggedIn:', loggedIn, 'role:', role);
 
