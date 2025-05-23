@@ -10,44 +10,31 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { ProductoFormComponent } from './productos/producto-form/producto-form.component';
 import { FormsModule } from '@angular/forms';
 
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
+// Importa los módulos de Angular Material que necesitas
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-
-
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     ProductosComponent,
-
     UsuariosComponent,
     AuditoriaComponent,
     ReportesComponent,
-    
     ProductoFormComponent,
-
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     FormsModule,
 
+    // Agrega estos imports para Angular Material
     MatFormFieldModule,
-    MatTabsModule,
-    MatCardModule,
-    MatButtonModule,
+    MatInputModule,
+    MatTableModule,
     MatIconModule,
-    MatDividerModule,
-
-    MatTableModule,  
-    MatInputModule
-    
   ]
 })
 export class AdminModule { }

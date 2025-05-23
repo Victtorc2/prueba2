@@ -8,7 +8,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AuditoriaComponent } from './auditoria/auditoria.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { ProductoFormComponent } from './productos/producto-form/producto-form.component';
-
+ 
 
 const routes: Routes = [
   {

@@ -19,6 +19,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+
+
+import { InventarioRoutingModule } from './inventario-routing.module';
+
 @NgModule({
   declarations: [InventarioComponent],
   imports: [
@@ -36,9 +40,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    RouterModule.forChild([
-      { path: '', component: InventarioComponent }
-    ])
+    InventarioRoutingModule
   ]
 })
 export class InventarioModule { }
