@@ -3,6 +3,7 @@ export class Producto {
   nombre: string = '';
   codigo: string = '';
   categoria: string = '';
+  precio: number = 0;
   stock: number = 0;
   proveedor?: string;
   presentacion?: string;

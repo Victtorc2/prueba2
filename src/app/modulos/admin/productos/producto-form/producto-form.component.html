@@ -9,6 +9,11 @@
   <label>Categoría:</label>
   <input type="text" name="categoria" [(ngModel)]="producto.categoria" required />
 
+  
+  <label>Precio:</label>
+  <input type="text" name="precio" [(ngModel)]="producto.precio" required min="0" />
+
+
   <label>Stock:</label>
   <input type="number" name="stock" [(ngModel)]="producto.stock" required min="0" />
 
