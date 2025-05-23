@@ -12,11 +12,13 @@ export class ProductoService {
 
   constructor(private http: HttpClient) { }
 
-  listarProductos(nombre?: string, categoria?: string, codigo?: string): Observable<Producto[]> {
+  listarProductos(nombre?: string, categoria?: string, codigo?: string, precio?: number): Observable<Producto[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
     if (categoria) params = params.set('categoria', categoria);
     if (codigo) params = params.set('codigo', codigo);
+        if (precio) params = params.set('precio', precio);
+
     return this.http.get<Producto[]>(this.baseUrl, { params });
   }
 
