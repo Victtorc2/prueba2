@@ -5,9 +5,16 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
 import { EmpleadoGuard } from './core/guards/empleado.guard';
 
+
 const routes: Routes = [
   { path: 'login', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
   { path: 'admin', canActivate: [AuthGuard, AdminGuard], loadChildren: () => import('./modulos/admin/admin.module').then(m => m.AdminModule) },
+  { 
+  path: 'empleado', 
+  canActivate: [AuthGuard, EmpleadoGuard], 
+  loadChildren: () => import('./modulos-compartidos/modulos-compartidos.module').then(m => m.ModulosCompartidosModule) 
+},
+
 
   
  { path: 'inicio', loadChildren: () => import('./modulos-compartidos/inicio/inicio.module').then(m => m.InicioModule) },

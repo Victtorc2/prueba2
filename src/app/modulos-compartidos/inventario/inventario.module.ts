@@ -22,7 +22,7 @@ import { MatOptionModule } from '@angular/material/core';
 
 
 import { InventarioRoutingModule } from './inventario-routing.module';
-
+ 
 @NgModule({
   declarations: [InventarioComponent],
   imports: [

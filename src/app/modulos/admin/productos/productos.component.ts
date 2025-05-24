@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../services/producto.service';
 import { Producto } from '../../admin/productos/models/producto.model';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'; 
 
 
 @Component({

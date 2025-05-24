@@ -9,6 +9,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { LoginComponent } from './login/login.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
+import { MatIconModule } from '@angular/material/icon';
+
+
 
 const routes: Routes = [
   { path: '', component: LoginComponent }
@@ -24,6 +29,8 @@ const routes: Routes = [
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatCheckboxModule,
+    MatIconModule,
     RouterModule.forChild(routes) // ✅ NECESARIO
   ]
 })
