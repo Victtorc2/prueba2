@@ -1,0 +1,142 @@
+/* Inputs & selects */
+input::placeholder,
+select {
+  color: #adb5bd;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+/* Column widths */
+.col-id {
+  min-width: 60px;
+}
+
+.col-nombre,
+.col-apellido {
+  min-width: 110px;
+}
+
+.col-dni {
+  min-width: 110px;
+}
+
+.col-correo {
+  min-width: 140px;
+}
+
+.col-password {
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.col-roles {
+  min-width: 100px;
+}
+
+.col-acciones {
+  min-width: 150px;
+}
+
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tabla */
+.table-responsive {
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0.75rem 1rem;
+}
+
+.table thead {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #212529;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f3f5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Botones */
+button.btn-sm {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+}
+
+/* Modal personalizado */
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.custom-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header,
+.modal-footer {
+  border: none;
+}
+
+/* Cierre */
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+  .custom-modal {
+    padding: 1rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.5rem 0.75rem;
+  }
+}

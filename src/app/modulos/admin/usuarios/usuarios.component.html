@@ -1,1 +1,106 @@
-<p>usuarios works!</p>
+<div class="container py-4">
+  <!-- Título y botón -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">Gestión de Usuarios</h4>
+    <button class="btn btn-primary btn-sm" (click)="prepararNuevoUsuario()">
+      Nuevo usuario
+    </button>
+  </div>
+
+<!-- Tabla de usuarios -->
+<div class="table-responsive">
+  <table class="table table-hover table-bordered align-middle text-nowrap">
+    <thead class="table-light">
+      <tr>
+  <th class="col-id">ID</th>
+  <th class="col-nombre">Nombre</th>
+  <th class="col-apellido">Apellido</th>
+  <th class="col-dni">DNI</th>
+  <th class="col-correo">Correo</th>
+  <th class="col-password">Contraseña</th>
+  <th class="col-roles">Roles</th>
+  <th class="col-acciones text-end">Acciones</th>
+</tr>
+
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuariosFiltrados()">
+        <td>{{ usuario.id }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.apellido }}</td>
+        <td>{{ usuario.dni }}</td>
+        <td>{{ usuario.correo }}</td>
+        <td class="text-truncate" style="max-width: 200px;">{{ usuario.password }}</td>
+        <td>{{ usuario.roles.join(', ') }}</td>
+        <td class="text-end">
+          <button class="btn btn-outline-secondary btn-sm me-2" (click)="editar(usuario)">Editar</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminar(usuario.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+  <!-- Modal personalizado mejorado -->
+<div class="custom-modal-backdrop" *ngIf="mostrarModal">
+  <div class="custom-modal">
+    <form (ngSubmit)="guardar()" #usuarioForm="ngForm" autocomplete="off">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h5 class="modal-title">{{ modoEdicion ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
+        <button type="button" class="btn-close" (click)="cancelar()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+          <input type="number" class="form-control" placeholder="ID" [(ngModel)]="usuarioActual.id" name="id" required />
+          </div>
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="usuarioActual.nombre" name="nombre" required />
+          </div>
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Apellido" [(ngModel)]="usuarioActual.apellido" name="apellido" required />
+          </div>
+          <div class="col-md-6">
+          <input type="number" class="form-control" placeholder="DNI" [(ngModel)]="usuarioActual.dni" name="dni" min="1" required />
+          </div>
+          <div class="col-md-6">
+            <input type="email" class="form-control" placeholder="Correo" [(ngModel)]="usuarioActual.correo" name="correo" required />
+          </div>
+          <div class="col-md-6">
+            <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="usuarioActual.password" name="password" [required]="!modoEdicion" />
+          </div>
+          <div class="col-md-12">
+  <label class="form-label">Roles</label>
+  <div class="btn-group w-100" role="group" aria-label="Seleccionar roles">
+    <button
+      type="button"
+      class="btn"
+      [class.btn-outline-primary]="!usuarioActual.roles.includes('ADMIN')"
+      [class.btn-primary]="usuarioActual.roles.includes('ADMIN')"
+      (click)="toggleRol('ADMIN')">
+      Admin
+    </button>
+    <button
+      type="button"
+      class="btn"
+      [class.btn-outline-primary]="!usuarioActual.roles.includes('USER')"
+      [class.btn-primary]="usuarioActual.roles.includes('USER')"
+      (click)="toggleRol('USER')">
+      Empleado
+    </button>
+  </div>
+  <small class="text-muted">Haz clic en los roles que deseas asignar</small>
+</div>
+
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-end mt-4">
+        <button type="button" class="btn btn-secondary me-2" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
