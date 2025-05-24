@@ -1,35 +1,54 @@
 <form #form="ngForm" (ngSubmit)="guardar(form)">
 
-  <label>Nombre:</label>
-  <input type="text" name="nombre" [(ngModel)]="producto.nombre" required />
+  <div>
+    <label>Nombre:</label>
+    <input type="text" name="nombre" [(ngModel)]="producto.nombre" required />
+  </div>
 
-  <label>Código:</label>
-  <input type="text" name="codigo" [(ngModel)]="producto.codigo" required />
+  <div>
+    <label>Código:</label>
+    <input type="text" name="codigo" [(ngModel)]="producto.codigo" required />
+  </div>
 
-  <label>Categoría:</label>
-  <input type="text" name="categoria" [(ngModel)]="producto.categoria" required />
+  <div>
+    <label>Categoría:</label>
+    <input type="text" name="categoria" [(ngModel)]="producto.categoria" required />
+  </div>
 
-  
-  <label>Precio:</label>
-  <input type="text" name="precio" [(ngModel)]="producto.precio" required min="0" />
+  <div>
+    <label>Precio:</label>
+    <input type="number" name="precio" [(ngModel)]="producto.precio" required min="0" step="any" />
+  </div>
 
+  <div>
+    <label>Stock:</label>
+    <input type="number" name="stock" [(ngModel)]="producto.stock" required min="0" />
+  </div>
 
-  <label>Stock:</label>
-  <input type="number" name="stock" [(ngModel)]="producto.stock" required min="0" />
+  <div>
+    <label>Proveedor:</label>
+    <input type="text" name="proveedor" [(ngModel)]="producto.proveedor" />
+  </div>
 
-  <label>Proveedor:</label>
-  <input type="text" name="proveedor" [(ngModel)]="producto.proveedor" />
+  <div>
+    <label>Presentación:</label>
+    <input type="text" name="presentacion" [(ngModel)]="producto.presentacion" />
+  </div>
 
-  <label>Presentación:</label>
-  <input type="text" name="presentacion" [(ngModel)]="producto.presentacion" />
+ 
+  <div>
+    <label>Imagen:</label>
+    <input type="file" name="imagen" (change)="onFileSelected($event)" />
+  </div>
 
-  <label>Imagen (URL):</label>
-  <input type="text" name="imagen" [(ngModel)]="producto.imagen" />
+  <div>
+    <label>Fecha de Vencimiento:</label>
+    <input type="date" name="fechaVencimiento" [(ngModel)]="producto.fechaVencimiento" />
+  </div>
 
-  <label>Fecha de Vencimiento:</label>
-  <input type="date" name="fechaVencimiento" [(ngModel)]="producto.fechaVencimiento" />
-
-  <button type="submit" [disabled]="form.invalid">{{ esEdicion ? 'Actualizar' : 'Crear' }}</button>
-  <button type="button" (click)="cancelar()">Cancelar</button>
+  <div>
+    <button type="submit" [disabled]="form.invalid">{{ esEdicion ? 'Actualizar' : 'Crear' }}</button>
+    <button type="button" (click)="cancelar()">Cancelar</button>
+  </div>
 
 </form>

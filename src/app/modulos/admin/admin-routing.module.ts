@@ -6,26 +6,25 @@ import { ProductosComponent } from './productos/productos.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AuditoriaComponent } from './auditoria/auditoria.component';
 import { ReportesComponent } from './reportes/reportes.component';
-import { InicioComponent } from '../../modulos-compartidos/inicio/inicio.component';
-
-
+import { ProductoFormComponent } from './productos/producto-form/producto-form.component';
  
 
 const routes: Routes = [
   {
-  path: '',
-  component: MainLayoutComponent,
-  children: [
-    { path: '', redirectTo: 'inicio', pathMatch: 'full' }, // // <-- muestra un dashboard o algo aquí
-    { path: 'productos', component: ProductosComponent },
-    { path: 'usuarios', component: UsuariosComponent },
-    { path: 'auditoria', component: AuditoriaComponent },
-    { path: 'reportes', component: ReportesComponent },
-    // elimina esta línea
-    // { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-  ]
-}
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: 'productos', component: ProductosComponent },
+      { path: 'productos/nuevo', component: ProductoFormComponent },
+      { path: 'productos/editar/:id', component: ProductoFormComponent },
 
+
+      { path: 'usuarios', component: UsuariosComponent },
+      { path: 'auditoria', component: AuditoriaComponent },
+      { path: 'reportes', component: ReportesComponent },
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+    ]
+  }
 ];
 
 

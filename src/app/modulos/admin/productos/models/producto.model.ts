@@ -7,6 +7,6 @@ export class Producto {
   stock: number = 0;
   proveedor?: string;
   presentacion?: string;
-  imagen?: string;
+  imagenUrl?: string;
   fechaVencimiento?: string; // ISO string format yyyy-MM-dd
 }
