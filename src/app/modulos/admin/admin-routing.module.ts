@@ -6,7 +6,6 @@ import { ProductosComponent } from './productos/productos.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AuditoriaComponent } from './auditoria/auditoria.component';
 import { ReportesComponent } from './reportes/reportes.component';
-import { InicioComponent } from '../../modulos-compartidos/inicio/inicio.component';
 
 
  
@@ -26,6 +25,9 @@ const routes: Routes = [
   ]
 }
 
+
+
+     
 ];
 
 

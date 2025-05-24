@@ -3,7 +3,9 @@
 
     <!-- Perfil del usuario -->
     <div class="user-profile">
-      <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg" alt="Usuario" class="user-avatar" />
+      <img
+        src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+        alt="Usuario" class="user-avatar" />
       <div class="user-info">
         <h4>Usuario</h4>
         <p>{{ user?.correo }}</p>
@@ -14,18 +16,32 @@
     <mat-nav-list>
 
       <ng-container *ngIf="rol === 'ADMIN' || rol === 'EMPLEADO'">
-          <a mat-list-item routerLink="/inicio" routerLinkActive="active-link"><mat-icon>home</mat-icon> Inicio</a>
-        <a mat-list-item routerLink="/inventario" routerLinkActive="active-link"><mat-icon>store</mat-icon> Inventario</a>
-        <a mat-list-item routerLink="/ventas" routerLinkActive="active-link"><mat-icon>point_of_sale</mat-icon> Ventas</a>
+        <a mat-list-item routerLink="/inicio" routerLinkActive="active-link"><mat-icon>home</mat-icon> Inicio</a>
       </ng-container>
 
-      
       <ng-container *ngIf="rol === 'ADMIN'">
-        <a mat-list-item routerLink="/admin/productos" routerLinkActive="active-link"><mat-icon>inventory_2</mat-icon> Productos</a>
-        <a mat-list-item routerLink="/admin/usuarios" routerLinkActive="active-link"><mat-icon>group</mat-icon> Usuarios</a>
-        <a mat-list-item routerLink="/admin/auditoria" routerLinkActive="active-link"><mat-icon>search</mat-icon> Auditoría</a>
-        <a mat-list-item routerLink="/admin/reportes" routerLinkActive="active-link"><mat-icon>bar_chart</mat-icon> Reportes</a>
-        
+        <a mat-list-item routerLink="/admin/productos" routerLinkActive="active-link"><mat-icon>inventory_2</mat-icon>
+          Productos</a>
+
+      </ng-container>
+
+      <ng-container *ngIf="rol === 'ADMIN' || rol === 'EMPLEADO'">
+        <a mat-list-item routerLink="/inventario" routerLinkActive="active-link"><mat-icon>store</mat-icon>
+          Inventario</a>
+
+        <a mat-list-item routerLink="/ventas" routerLinkActive="active-link"><mat-icon>point_of_sale</mat-icon>
+          Ventas</a>
+      </ng-container>
+
+
+      <ng-container *ngIf="rol === 'ADMIN'">
+        <a mat-list-item routerLink="/admin/usuarios" routerLinkActive="active-link"><mat-icon>group</mat-icon>
+          Usuarios</a>
+        <a mat-list-item routerLink="/admin/auditoria" routerLinkActive="active-link"><mat-icon>search</mat-icon>
+          Auditoría</a>
+        <a mat-list-item routerLink="/admin/reportes" routerLinkActive="active-link"><mat-icon>bar_chart</mat-icon>
+          Reportes</a>
+
       </ng-container>
 
 
@@ -52,7 +68,7 @@
     </mat-toolbar>
 
     <div class="main-content" style="padding: 16px;">
-          <router-outlet></router-outlet>
+      <router-outlet></router-outlet>
 
     </div>
 

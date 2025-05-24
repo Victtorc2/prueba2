@@ -41,18 +41,19 @@ export class InventarioComponent implements OnInit {
     this.cargarDatosIniciales();
   }
 
-  cargarDatosIniciales(): void {
-    this.productoService.listarProductos().subscribe({
-      next: (productos) => {
-        this.productos = productos;
-        this.cargarMovimientos();
-        this.cargarCategorias();
-        this.cargarProductosProximosVencer();
-        this.cargarProductosBajoStock();
-      },
-      error: (err) => console.error('Error al cargar productos', err)
-    });
-  }
+cargarDatosIniciales(): void {
+  this.productoService.listarProductos().subscribe({
+    next: (productos) => {
+      this.productos = productos;
+    },
+    error: (err) => console.error('Error al cargar productos', err)
+  });
+
+  this.cargarMovimientos();
+  this.cargarCategorias();
+  this.cargarProductosProximosVencer();
+  this.cargarProductosBajoStock();
+}
 
   cargarMovimientos(): void {
     this.productoService.listarMovimientos().subscribe({
@@ -163,7 +164,9 @@ export class InventarioComponent implements OnInit {
       next: () => {
         this.cargarMovimientos();
         this.cancelarEdicion();
+        this.cargarDatosIniciales();
       },
+      
       error: (err) => console.error('Error al guardar movimiento', err)
     });
   }

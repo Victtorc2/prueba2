@@ -18,6 +18,7 @@ const routes: Routes = [
 
   
  { path: 'inicio', loadChildren: () => import('./modulos-compartidos/inicio/inicio.module').then(m => m.InicioModule) },
+ 
 { path: 'ventas', loadChildren: () => import('./modulos-compartidos/ventas/ventas.module').then(m => m.VentasModule) },
 { path: 'inventario', loadChildren: () => import('./modulos-compartidos/inventario/inventario.module').then(m => m.InventarioModule) },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

@@ -1,99 +1,210 @@
-<div class="filtros" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+<div class="productos-container">
 
-  <mat-form-field appearance="outline" class="filtro-input">
-    <mat-label>Buscar por nombre</mat-label>
-    <input matInput [(ngModel)]="filtroNombre" (ngModelChange)="buscar()" />
-  </mat-form-field>
+  <!-- Filtros -->
+  <div class="filtros">
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar por nombre o código</mat-label>
+      <input matInput (keyup)="aplicarFiltro($event)" placeholder="Buscar producto" />
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="filtro-input">
-    <mat-label>Buscar por categoría</mat-label>
-    <input matInput [(ngModel)]="filtroCategoria" (ngModelChange)="buscar()" />
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrar por categoría</mat-label>
+      <mat-select [(value)]="categoriaSeleccionada" (selectionChange)="filtrarPorCategoria()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let categoria of categorias" [value]="categoria">
+          {{ categoria }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="filtro-input">
-    <mat-label>Buscar por código</mat-label>
-    <input matInput [(ngModel)]="filtroCodigo" (ngModelChange)="buscar()" />
-  </mat-form-field>
+    <button mat-raised-button color="primary" (click)="abrirDialogo()">Agregar producto</button>
+  </div>
 
-  <button mat-stroked-button color="primary" (click)="limpiarFiltros()">Limpiar</button>
-  <button mat-flat-button color="accent" (click)="crearProducto()">Nuevo Producto</button>
+  <!-- Tabs -->
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
 
+    <!-- TAB: Todos -->
+    <mat-tab label="Todos">
+      <table mat-table [dataSource]="productos" class="mat-elevation-z8" style="width: 100%; margin-top: 16px;">
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.nombre }} </td>
+        </ng-container>
+
+        <!-- Categoría -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef> Categoría </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.categoria }} </td>
+        </ng-container>
+
+        <!-- Código -->
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef> Código </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.codigo }} </td>
+        </ng-container>
+
+        <!-- Precio -->
+        <ng-container matColumnDef="precio">
+          <th mat-header-cell *matHeaderCellDef> Precio </th>
+          <td mat-cell *matCellDef="let producto"> S/ {{ producto.precio | number:'1.2-2' }} </td>
+        </ng-container>
+
+        <!-- Stock -->
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef> Stock </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.stock }} </td>
+        </ng-container>
+
+        <!-- Proveedor -->
+        <ng-container matColumnDef="proveedor">
+          <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.proveedor }} </td>
+        </ng-container>
+
+        <!-- Presentación -->
+        <ng-container matColumnDef="presentacion">
+          <th mat-header-cell *matHeaderCellDef> Presentación </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.presentacion }} </td>
+        </ng-container>
+
+        <!-- Imagen -->
+        <ng-container matColumnDef="imagen">
+          <th mat-header-cell *matHeaderCellDef> Imagen </th>
+          <td mat-cell *matCellDef="let producto">
+            <img [src]="producto.imagenUrl" alt="Imagen producto" width="50" height="50" />
+          </td>
+        </ng-container>
+
+        <!-- Fecha de vencimiento -->
+        <ng-container matColumnDef="fechaVencimiento">
+          <th mat-header-cell *matHeaderCellDef> Fecha de Vencimiento </th>
+          <td mat-cell *matCellDef="let producto">
+            <span [ngClass]="{'fecha-proximo-vencer': isProximoAVencer(producto.fechaVencimiento)}">
+              {{ producto.fechaVencimiento ? (producto.fechaVencimiento | date:'yyyy-MM-dd') : '-' }}
+              <mat-icon *ngIf="isProximoAVencer(producto.fechaVencimiento)" color="warn">warning</mat-icon>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let producto">
+            <button mat-icon-button color="primary" (click)="editarProducto(producto)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarProducto(producto)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Filas -->
+        <tr mat-header-row *matHeaderRowDef="['nombre','categoria','codigo','precio','stock','proveedor','presentacion','imagen','fechaVencimiento','acciones']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nombre','categoria','codigo','precio','stock','proveedor','presentacion','imagen','fechaVencimiento','acciones']"></tr>
+      </table>
+    </mat-tab>
+
+    <!-- TAB: Próximos a vencer -->
+    <mat-tab label="Próximos a vencer">
+      <table mat-table [dataSource]="productosAVencer" class="mat-elevation-z8" style="width: 100%; margin-top: 16px;">
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.nombre }} </td>
+        </ng-container>
+
+        <!-- Categoría -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef> Categoría </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.categoria }} </td>
+        </ng-container>
+
+        <!-- Código -->
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef> Código </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.codigo }} </td>
+        </ng-container>
+
+        <!-- Fecha de vencimiento -->
+        <ng-container matColumnDef="fechaVencimiento">
+          <th mat-header-cell *matHeaderCellDef> Fecha de Vencimiento </th>
+          <td mat-cell *matCellDef="let producto">
+            <span class="fecha-proximo-vencer">
+              {{ producto.fechaVencimiento ? (producto.fechaVencimiento | date:'yyyy-MM-dd') : '-' }}
+              <mat-icon color="warn">warning</mat-icon>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let producto">
+            <button mat-icon-button color="primary" (click)="editarProducto(producto)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarProducto(producto)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Filas -->
+        <tr mat-header-row *matHeaderRowDef="['nombre','categoria','codigo','fechaVencimiento','acciones']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nombre','categoria','codigo','fechaVencimiento','acciones']"></tr>
+      </table>
+    </mat-tab>
+
+    <!-- TAB: Stock bajo -->
+    <mat-tab label="Stock bajo">
+      <table mat-table [dataSource]="productosStockBajo" class="mat-elevation-z8" style="width: 100%; margin-top: 16px;">
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.nombre }} </td>
+        </ng-container>
+
+        <!-- Categoría -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef> Categoría </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.categoria }} </td>
+        </ng-container>
+
+        <!-- Código -->
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef> Código </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.codigo }} </td>
+        </ng-container>
+
+        <!-- Stock -->
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef> Stock </th>
+          <td mat-cell *matCellDef="let producto"> {{ producto.stock }} </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let producto">
+            <button mat-icon-button color="primary" (click)="editarProducto(producto)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarProducto(producto)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Filas -->
+        <tr mat-header-row *matHeaderRowDef="['nombre','categoria','codigo','stock','acciones']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nombre','categoria','codigo','stock','acciones']"></tr>
+      </table>
+    </mat-tab>
+
+  </mat-tab-group>
 </div>
-
-<table mat-table [dataSource]="productos" class="mat-elevation-z8" style="width: 100%;">
-
-  <!-- Nombre -->
-  <ng-container matColumnDef="nombre">
-    <th mat-header-cell *matHeaderCellDef> Nombre </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.nombre}} </td>
-  </ng-container>
-
-  <!-- Categoría -->
-  <ng-container matColumnDef="categoria">
-    <th mat-header-cell *matHeaderCellDef> Categoría </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.categoria}} </td>
-  </ng-container>
-
-  <!-- Código -->
-  <ng-container matColumnDef="codigo">
-    <th mat-header-cell *matHeaderCellDef> Código </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.codigo}} </td>
-  </ng-container>
-
-  <!-- Precio -->
-<ng-container matColumnDef="precio">
-  <th mat-header-cell *matHeaderCellDef> Precio </th>
-  <td mat-cell *matCellDef="let producto"> S/ {{producto.precio | number:'1.2-2'}} </td>
-</ng-container>
-
-  <!-- Stock -->
-  <ng-container matColumnDef="stock">
-    <th mat-header-cell *matHeaderCellDef> Stock </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.stock}} </td>
-  </ng-container>
-
-  <!-- Proveedor -->
-  <ng-container matColumnDef="proveedor">
-    <th mat-header-cell *matHeaderCellDef> Proveedor </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.proveedor || '-'}} </td>
-  </ng-container>
-
-  <!-- Presentación -->
-  <ng-container matColumnDef="presentacion">
-    <th mat-header-cell *matHeaderCellDef> Presentación </th>
-    <td mat-cell *matCellDef="let producto"> {{producto.presentacion || '-'}} </td>
-  </ng-container>
-
-  <!-- Imagen -->
-  <ng-container matColumnDef="imagen">
-    <th mat-header-cell *matHeaderCellDef> Imagen </th>
-    <td mat-cell *matCellDef="let producto">
-      <img *ngIf="producto.imagen" [src]="producto.imagen" alt="{{producto.nombre}}" width="60" />
-      <span *ngIf="!producto.imagen">-</span>
-    </td>
-  </ng-container>
-
-  <!-- Fecha de Vencimiento -->
-  <ng-container matColumnDef="fechaVencimiento">
-    <th mat-header-cell *matHeaderCellDef> Fecha de Vencimiento </th>
-    <td mat-cell *matCellDef="let producto"> 
-      {{ producto.fechaVencimiento ? (producto.fechaVencimiento | date:'yyyy-MM-dd') : '-' }} 
-    </td>
-  </ng-container>
-
-  <!-- Acciones -->
-  <ng-container matColumnDef="acciones">
-    <th mat-header-cell *matHeaderCellDef> Acciones </th>
-    <td mat-cell *matCellDef="let producto">
-      <button mat-icon-button color="primary" [routerLink]="['/admin/productos/editar', producto.id]" aria-label="Editar producto">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" (click)="eliminarProducto(producto.id)" aria-label="Eliminar producto">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="['nombre','categoria','codigo', 'precio','stock','proveedor','presentacion','imagen','fechaVencimiento','acciones']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['nombre','categoria','codigo','precio','stock','proveedor','presentacion','imagen','fechaVencimiento','acciones'];"></tr>
-</table>

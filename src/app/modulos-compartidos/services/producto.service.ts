@@ -21,11 +21,11 @@ export interface MovimientoInventario {
   cantidad: number;
   ubicacion: string;
   observacion: string;
-  tipo: 'INGRESO' | 'SALIDA';
+  tipo: 'INGRESO' | 'SALIDA' | 'AJUSTE';
   fecha: string;
   productoNombre?: string;
   categoria?: string;
-  precio?: number; 
+  precio?: number;
 
 }
 
@@ -36,7 +36,7 @@ export class ProductoService {
   private baseUrl = 'http://localhost:8080/api/inventario';
   private productosUrl = 'http://localhost:8080/api/productos';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   registrarMovimiento(movimiento: MovimientoInventario): Observable<any> {
     return this.http.post(`${this.baseUrl}`, movimiento);
