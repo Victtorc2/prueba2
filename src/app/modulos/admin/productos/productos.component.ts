@@ -73,7 +73,6 @@ cargarProductos(): void {
     this.router.navigate(['/admin/productos/nuevo']);
   }
 
-
   editarProducto(producto: Producto): void {
     this.router.navigate(['/admin/productos/editar', producto.id]);
   }
