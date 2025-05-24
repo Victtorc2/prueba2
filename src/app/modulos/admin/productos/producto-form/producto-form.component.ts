@@ -24,16 +24,23 @@ export class ProductoFormComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
-  ngOnInit(): void {
-    this.id = +this.route.snapshot.params['id'];
-    if (this.id) {
-      this.esEdicion = true;
-      this.productoService.obtenerProducto(this.id).subscribe({
-        next: (data: Producto) => this.producto = data,
-        error: err => console.error('Error cargando producto', err)
-      });
-    }
+
+
+ngOnInit(): void {
+  this.id = +this.route.snapshot.params['id'];
+  if (this.id) {
+    this.esEdicion = true;
+    this.cargarProducto();
   }
+}
+
+cargarProducto(): void {
+  this.productoService.obtenerProducto(this.id!).subscribe({
+    next: (data: Producto) => this.producto = data,
+    error: err => console.error('Error cargando producto', err)
+  });
+}
+
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -42,32 +49,33 @@ export class ProductoFormComponent implements OnInit {
     }
   }
 
-  guardar(form: NgForm): void {
-    if (form.invalid) return;
+guardar(form: NgForm): void {
+  if (form.invalid) return;
 
-    const formData = new FormData();
+  console.log('Producto que se envía:', this.producto); // <--- VERIFICA AQUÍ
 
-    // Convertir producto a JSON y luego a Blob para enviarlo en FormData
-    const productoJSON = JSON.stringify(this.producto);
-    const productoBlob = new Blob([productoJSON], { type: 'application/json' });
-    formData.append('producto', productoBlob);
+  const formData = new FormData();
+  const productoJSON = JSON.stringify(this.producto);
+  const productoBlob = new Blob([productoJSON], { type: 'application/json' });
+  formData.append('producto', productoBlob);
 
-    if (this.imagenSeleccionada) {
-      formData.append('imagen', this.imagenSeleccionada);
-    }
-
-    if (this.esEdicion && this.id) {
-      this.productoService.actualizarProducto(this.id, formData).subscribe({
-        next: () => this.router.navigate(['/admin/productos']),
-        error: err => console.error('Error actualizando producto', err)
-      });
-    } else {
-      this.productoService.crearProducto(formData).subscribe({
-        next: () => this.router.navigate(['/admin/productos']),
-        error: err => console.error('Error creando producto', err)
-      });
-    }
+  if (this.imagenSeleccionada) {
+    formData.append('imagen', this.imagenSeleccionada);
   }
+
+  if (this.esEdicion && this.id) {
+    this.productoService.actualizarProducto(this.id, formData).subscribe({
+      next: () => this.router.navigate(['/admin/productos']),
+      error: err => console.error('Error actualizando producto', err)
+    });
+  } else {
+    this.productoService.crearProducto(formData).subscribe({
+      next: () => this.router.navigate(['/admin/productos']),
+      error: err => console.error('Error creando producto', err)
+    });
+  }
+}
+
 
   cancelar(): void {
     this.router.navigate(['/admin/productos']);
