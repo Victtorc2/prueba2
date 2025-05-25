@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatListModule } from '@angular/material/list';
 
 
 import { MatSelectModule } from '@angular/material/select';
@@ -40,7 +41,9 @@ import { InventarioRoutingModule } from './inventario-routing.module';
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    InventarioRoutingModule
+    InventarioRoutingModule,
+        MatListModule
+
   ]
 })
 export class InventarioModule { }

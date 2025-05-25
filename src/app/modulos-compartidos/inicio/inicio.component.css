@@ -1,67 +1,74 @@
 .inicio-container {
-  padding: 1rem;
+  padding: 2rem;
+  background-color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
 }
 
-h1 {
-  font-size: 1.75rem;
+.titulo {
+  font-size: 2rem;
+  font-weight: 600;
   margin-bottom: 1.5rem;
+  color: #333;
 }
 
 .ventas-header {
   margin-bottom: 1rem;
 }
 
-.ventas-header h3 {
+.ventas-header h2 {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  color: #1976d2;
 }
 
-.ventas-header p {
-  color: #666;
-  font-size: 0.875rem;
+.descripcion {
+  font-size: 0.95rem;
+  color: #555;
 }
 
-.venta-item {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+.ventas-lista {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 2rem;
+}
+
+.venta-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.avatar-icon {
+  background-color: #1976d2;
+  color: white;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  transition: border-color 0.2s ease;
-}
-
-.venta-item.active {
-  border-color: #1976d2;
-  box-shadow: 0 0 6px rgba(25, 118, 210, 0.3);
-}
-
-.venta-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.text-muted {
-  color: #888;
-  font-size: 0.875rem;
+  justify-content: center;
 }
 
 .venta-detalle {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
 }
 
 .monto {
   font-weight: 600;
+  color: #2e7d32;
 }
 
-.text-end {
-  text-align: right;
+.acciones-footer {
+  text-align: center;
 }
 
-.mt-3 {
-  margin-top: 1rem;
+.tab-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
 }
+
+

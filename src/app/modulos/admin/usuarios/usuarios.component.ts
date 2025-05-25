@@ -14,7 +14,7 @@ export class UsuariosComponent {
   modoEdicion: boolean = false;
   mostrarModal: boolean = false;
   filtro: string = '';
-  rolesDisponibles: string[] = ['ADMIN', 'USER'];
+  rolesDisponibles: string[] = ['ADMIN', 'EMPLEADO'];
 
   nuevoUsuarioVacio(): Usuario {
   return {

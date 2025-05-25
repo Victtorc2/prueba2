@@ -85,9 +85,9 @@
     <button
       type="button"
       class="btn"
-      [class.btn-outline-primary]="!usuarioActual.roles.includes('USER')"
-      [class.btn-primary]="usuarioActual.roles.includes('USER')"
-      (click)="toggleRol('USER')">
+      [class.btn-outline-primary]="!usuarioActual.roles.includes('EMPLEADO')"
+      [class.btn-primary]="usuarioActual.roles.includes('EMPLEADO')"
+      (click)="toggleRol('EMPLEADO')">
       Empleado
     </button>
   </div>
