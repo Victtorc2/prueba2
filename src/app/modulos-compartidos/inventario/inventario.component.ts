@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./inventario.component.css']
 })
 export class InventarioComponent implements OnInit {
-  columnasTabla: string[] = ['productoNombre', 'categoria', 'cantidad', 'ubicacion', 'observacion', 'tipo', 'fecha', 'acciones'];
+  columnasTabla: string[] = ['productoNombre', 'categoria','precio', 'cantidad', 'ubicacion', 'observacion', 'tipo', 'fecha', 'acciones'];
 
   movimientos: MovimientoInventario[] = [];
   movimientosFiltrados: MovimientoInventario[] = [];
@@ -17,6 +17,13 @@ export class InventarioComponent implements OnInit {
   categorias: string[] = [];
   categoriaSeleccionada: string = 'Todos';
   productoSeleccionado: Producto | null = null;
+
+  productosProximosVencer: Producto[] = [];
+  productosBajoStock: Producto[] = [];
+
+  textoBusqueda: string = '';
+  indicePestania: number = 0;
+  textoCategoria: string = '';
 
   editando = false;
   formularioEdicion!: FormGroup;
@@ -26,7 +33,7 @@ export class InventarioComponent implements OnInit {
     private productoService: ProductoService,
     private authService: AuthService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.usuarioEsAdmin = this.authService.getRole()?.toUpperCase() === 'ADMIN';
@@ -34,28 +41,30 @@ export class InventarioComponent implements OnInit {
     this.cargarDatosIniciales();
   }
 
-  cargarDatosIniciales(): void {
-    this.productoService.listarProductos().subscribe({
-      next: (productos) => {
-        this.productos = productos;
-        this.cargarMovimientos();
-        this.cargarCategorias();
-      },
-      error: (err) => console.error('Error al cargar productos', err)
-    });
-  }
+cargarDatosIniciales(): void {
+  this.productoService.listarProductos().subscribe({
+    next: (productos) => {
+      this.productos = productos;
+    },
+    error: (err) => console.error('Error al cargar productos', err)
+  });
+
+  this.cargarMovimientos();
+  this.cargarCategorias();
+  this.cargarProductosProximosVencer();
+  this.cargarProductosBajoStock();
+}
 
   cargarMovimientos(): void {
     this.productoService.listarMovimientos().subscribe({
       next: (movimientos) => {
-        this.movimientos = movimientos.map(mov => {
-          const producto = this.productos.find(p => p.id === mov.productoId);
-          return {
-            ...mov,
-            productoNombre: producto?.nombre || 'Sin nombre',
-            categoria: producto?.categoria || 'Sin categoría'
-          };
-        });
+        this.movimientos = movimientos.map(mov => ({
+          ...mov,
+          productoNombre: mov.productoNombre || 'Sin nombre',
+          categoria: mov.categoria || 'Sin categoría',
+          precio: mov.precio, // deja el número como está, aunque sea undefined
+
+        }));
         this.aplicarFiltro();
       },
       error: (err) => console.error('Error al cargar movimientos', err)
@@ -66,6 +75,20 @@ export class InventarioComponent implements OnInit {
     this.productoService.listarCategorias().subscribe({
       next: (categorias) => this.categorias = categorias,
       error: (err) => console.error('Error al cargar categorías', err)
+    });
+  }
+
+  cargarProductosProximosVencer(): void {
+    this.productoService.listarProximosVencimientos().subscribe({
+      next: (prods) => this.productosProximosVencer = prods,
+      error: (err) => console.error('Error al cargar productos próximos a vencer', err)
+    });
+  }
+
+  cargarProductosBajoStock(): void {
+    this.productoService.listarStockBajo().subscribe({
+      next: (prods) => this.productosBajoStock = prods,
+      error: (err) => console.error('Error al cargar productos con stock bajo', err)
     });
   }
 
@@ -84,10 +107,26 @@ export class InventarioComponent implements OnInit {
     });
   }
 
+  cambiarPestania(index: number): void {
+    this.indicePestania = index;
+    this.aplicarFiltro();
+  }
+
   aplicarFiltro(): void {
-    this.movimientosFiltrados = this.categoriaSeleccionada === 'Todos' 
-      ? [...this.movimientos] 
-      : this.movimientos.filter(m => m.categoria === this.categoriaSeleccionada);
+    let tipoFiltro = '';
+    switch (this.indicePestania) {
+      case 0: tipoFiltro = 'INGRESO'; break;
+      case 1: tipoFiltro = 'SALIDA'; break;
+      case 2: tipoFiltro = 'AJUSTE'; break;
+      case 3: tipoFiltro = ''; break;
+    }
+
+    this.movimientosFiltrados = this.movimientos.filter(mov => {
+      const coincideTipo = tipoFiltro ? mov.tipo === tipoFiltro : true;
+      const coincideProducto = (mov.productoNombre ?? '').toLowerCase().includes(this.textoBusqueda.toLowerCase());
+      const coincideCategoria = (mov.categoria ?? '').toLowerCase().includes(this.textoCategoria.toLowerCase());
+      return coincideTipo && coincideProducto && coincideCategoria;
+    });
   }
 
   abrirFormularioNuevo(): void {
@@ -100,6 +139,7 @@ export class InventarioComponent implements OnInit {
       observacion: '',
       fecha: new Date().toISOString().substring(0, 10)
     });
+    this.productoSeleccionado = null;
   }
 
   cancelarEdicion(): void {
@@ -108,25 +148,28 @@ export class InventarioComponent implements OnInit {
     this.productoSeleccionado = null;
   }
 
-guardarCambios(): void {
-  if (this.formularioEdicion.invalid || !this.productoSeleccionado) return;
+  guardarCambios(): void {
+    if (this.formularioEdicion.invalid || !this.productoSeleccionado) return;
 
-  const movimiento: MovimientoInventario = {
-    ...this.formularioEdicion.value,
-    productoId: this.productoSeleccionado.id,
-    productoNombre: this.productoSeleccionado.nombre,
-    categoria: this.productoSeleccionado.categoria
-  };
+    const movimiento: MovimientoInventario = {
+      ...this.formularioEdicion.value,
+      productoId: this.productoSeleccionado.id!,
+      productoNombre: this.productoSeleccionado.nombre,
+      categoria: this.productoSeleccionado.categoria,
+      precio: this.productoSeleccionado.precio
 
-  this.productoService.registrarMovimiento(movimiento).subscribe({
-    next: () => {
-      this.cargarMovimientos();
-      this.cancelarEdicion();
-    },
-    error: (err) => console.error('Error al guardar movimiento', err)
-  });
-}
+    };
 
+    this.productoService.registrarMovimiento(movimiento).subscribe({
+      next: () => {
+        this.cargarMovimientos();
+        this.cancelarEdicion();
+        this.cargarDatosIniciales();
+      },
+      
+      error: (err) => console.error('Error al guardar movimiento', err)
+    });
+  }
 
   editarMovimiento(movimiento: MovimientoInventario): void {
     if (!this.usuarioEsAdmin) return;

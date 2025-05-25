@@ -3,10 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Producto {
+imagenUrl: any;
   id?: number;
   nombre: string;
   codigo: string;
   categoria: string;
+  precio: number;
   stock: number;
   proveedor: string;
   presentacion: string;
@@ -21,10 +23,12 @@ export interface MovimientoInventario {
   cantidad: number;
   ubicacion: string;
   observacion: string;
-  tipo: 'INGRESO' | 'SALIDA';
+  tipo: 'INGRESO' | 'SALIDA' | 'AJUSTE';
   fecha: string;
   productoNombre?: string;
   categoria?: string;
+  precio?: number;
+
 }
 
 @Injectable({
@@ -34,7 +38,7 @@ export class ProductoService {
   private baseUrl = 'http://localhost:8085/api/inventario';
   private productosUrl = 'http://localhost:8085/api/productos';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   registrarMovimiento(movimiento: MovimientoInventario): Observable<any> {
     return this.http.post(`${this.baseUrl}`, movimiento);

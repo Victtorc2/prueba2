@@ -1,19 +1,66 @@
-<div class="login-container">
-  <h2>Iniciar Sesión</h2>
+<!-- Fondo general -->
+<div class="login-background"></div>
+<div class="background-blur-layer"></div>
 
-  <form (ngSubmit)="onLogin()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Correo</mat-label>
-      <input matInput [(ngModel)]="correo" name="correo" required type="email" />
-    </mat-form-field>
+<!-- Contenedor general centrado -->
+<div class="login-wrapper">
+  <div class="login-container">
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Contraseña</mat-label>
-      <input matInput [(ngModel)]="password" type="password" name="password" required />
-    </mat-form-field>
+    <!-- Imagen de fondo decorativa -->
+    <div class="login-image">
+      <img src="https://png.pngtree.com/thumb_back/fh260/background/20240409/pngtree-empty-shopping-basket-on-wood-table-over-grocery-store-supermarket-blur-image_15653639.jpg" alt="Login Background" />
+    </div>
 
-    <button mat-raised-button color="primary" class="full-width" [disabled]="isLoading">
-      {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
-    </button>
-  </form>
+    <!-- Caja de formulario -->
+    <div class="login-box">
+      <form (ngSubmit)="onLogin()" class="login-form" #loginForm="ngForm" autocomplete="off">
+        <div class="form-field">
+          <h2>Bienvenido</h2>
+
+          <!-- Campo Correo -->
+          <div class="input-wrapper" [class.invalid]="correoInput.invalid && correoInput.touched">
+            <mat-icon class="icon">person</mat-icon>
+            <input
+              id="correo"
+              type="email"
+              name="correo"
+              required
+              [(ngModel)]="correo"
+              #correoInput="ngModel"
+              autocomplete="email"
+              placeholder="correo"
+            />
+          </div>
+          <div *ngIf="correoInput.invalid && correoInput.touched" class="error-msg">
+            Por favor ingresa un correo válido.
+          </div>
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div class="form-field">
+          <div class="input-wrapper" [class.invalid]="passwordInput.invalid && passwordInput.touched">
+            <mat-icon class="icon">lock</mat-icon>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              required
+              [(ngModel)]="password"
+              #passwordInput="ngModel"
+              autocomplete="current-password"
+              placeholder="contraseña"
+            />
+          </div>
+          <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-msg">
+            La contraseña es requerida.
+          </div>
+        </div>
+
+        <!-- Botón -->
+        <button type="submit" class="btn-login" [disabled]="isLoading || loginForm.invalid">
+          {{ isLoading ? 'Ingresando...' : 'Entrar' }}
+        </button>
+      </form>
+    </div>
+  </div>
 </div>

@@ -8,6 +8,7 @@ const routes: Routes = [
     path: '',
     component: ProductosComponent,
   },
+  
   {
     path: 'nuevo',
     component: ProductoFormComponent
@@ -22,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ProductosRoutingModule {}
+export class ProductosRoutingModule {}  

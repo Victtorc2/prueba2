@@ -8,31 +8,42 @@ import { Producto } from '../productos/models/producto.model';
 })
 export class ProductoService {
 
-  private baseUrl = 'http://localhost:8085/api/productos';  // Ajusta URL según tu backend
+  private baseUrl = 'http://localhost:8080/api/productos';  // Ajusta URL según tu backend
 
   constructor(private http: HttpClient) { }
 
-  listarProductos(nombre?: string, categoria?: string, codigo?: string): Observable<Producto[]> {
+  listarProductos(nombre?: string, categoria?: string, codigo?: string, precio?: number): Observable<Producto[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
     if (categoria) params = params.set('categoria', categoria);
     if (codigo) params = params.set('codigo', codigo);
-    return this.http.get<Producto[]>(this.baseUrl, { params });
+    if (precio) params = params.set('precio', precio);
+    return this.http.get<Producto[]>(this.apiUrl, { params });
   }
 
   obtenerProducto(id: number): Observable<Producto> {
-    return this.http.get<Producto>(`${this.baseUrl}/${id}`);
+    return this.http.get<Producto>(`${this.apiUrl}/${id}`);
   }
 
-  crearProducto(producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.baseUrl, producto);
+  // Estos métodos manejan FormData con producto + imagen
+  crearProducto(productoFormData: FormData): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, productoFormData);
   }
 
-  actualizarProducto(id: number, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.baseUrl}/${id}`, producto);
+  actualizarProducto(id: number, productoFormData: FormData): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${id}`, productoFormData);
   }
 
   eliminarProducto(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  productosProximosAVencer(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/alertas/vencimiento`);
+  }
+
+  productosStockBajo(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/alertas/stock-bajo`);
+  }
+
 }

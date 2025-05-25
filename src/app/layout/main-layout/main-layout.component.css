@@ -1,54 +1,130 @@
+/* General container */
 .sidenav-container {
   height: 100vh;
 }
 
+/* Barra lateral roja */
 .sidenav {
   width: 250px;
-  background-color: #f5f5f5;
+  background-color: #d83a3a; /* Rojo fuerte */
+  color: white;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Perfil de usuario */
 .user-profile {
-  padding: 16px;
+  padding: 20px;
   text-align: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .user-avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  border: 3px solid white;
 }
 
 .user-info h4 {
   margin: 8px 0 4px;
+  color: white;
 }
 
 .user-info p {
   font-size: 14px;
-  color: gray;
+  color: #000000;
 }
 
+/* Menú rojo */
+mat-nav-list a {
+  color: white;
+}
+
+mat-nav-list a:hover,
+.active-link {
+  background-color: #c62828; /* Un rojo un poco más claro */
+  border-left: 4px solid #ecde5e; /* Amarillo de acento */
+}
+
+mat-divider {
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 12px 0;
+}
+
+/* Botón cerrar sesión */
+button[color="warn"] {
+  color: white;
+  margin: 10px;
+}
+
+button[color="warn"]:hover {
+  background-color: #c62828;
+}
+
+/* Topbar completamente amarilla */
 .topbar {
+  background-color: #f5eb69; /* Amarillo vivo */
+  color: #000; /* Texto oscuro para contraste */
   position: sticky;
   top: 0;
   z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Contenido amarillo */
+mat-sidenav-content {
+  background-color: #ffffff; /* Amarillo clarito para contraste suave */
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 24px;
+}
+
+/* Título y notificaciones */
 .empresa-nombre {
   font-weight: bold;
   font-size: 18px;
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #000;
 }
 
 .spacer {
   flex: 1 1 auto;
 }
 
-.active-link {
-  background-color: #dcdcdc;
+.notif-icon {
+  color: #000;
+  cursor: pointer;
 }
 
-.main-content {
-  padding: 16px;
+/* Íconos de menú */
+mat-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+/* Estado activo: fondo blanco, texto e ícono rojo */
+.active-link {
+  background-color: white !important;
+  color: #b71c1c !important; /* Rojo intenso */
+  font-weight: bold;
+  border-left: 4px solid #f7ec8e; /* línea amarilla decorativa */
+}
+
+/* Para que los íconos también cambien de color en el enlace activo */
+.active-link mat-icon {
+  color: #000000 !important;
+}
+
+/* Links normales: blanco sobre fondo rojo */
+mat-nav-list a {
+  color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+mat-nav-list a mat-icon {
+  color: white;
 }

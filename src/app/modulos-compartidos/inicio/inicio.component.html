@@ -1,42 +1,56 @@
 <div class="inicio-container">
-  <h1>Panel de Control</h1>
+  <h1 class="titulo">Panel de Control</h1>
 
   <mat-tab-group>
     <!-- TAB: Ventas recientes -->
-    <mat-tab label="Ventas recientes">
-      <div class="ventas-header">
-        <h3>Ventas recientes</h3>
-        <p>Últimas 5 ventas registradas en el sistema</p>
+    <mat-tab label="🛒 Ventas recientes">
+      <section class="ventas-header">
+        <h2>Últimas ventas</h2>
+        <p class="descripcion">Se muestran las 5 ventas más recientes registradas en el sistema.</p>
+      </section>
+
+      <div class="ventas-lista">
+        <mat-card class="venta-card" *ngFor="let venta of ventas.slice(0, 5)">
+          <mat-card-header>
+            <div mat-card-avatar class="avatar-icon">
+              <mat-icon>receipt_long</mat-icon>
+            </div>
+            <mat-card-title>Venta {{ venta.id }}</mat-card-title>
+            <mat-card-subtitle>{{ venta.fecha }} • {{ venta.vendedor }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content class="venta-detalle">
+            <span>{{ venta.productos }} producto(s)</span>
+            <span class="monto">S/ {{ venta.total.toFixed(2) }}</span>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-icon-button color="primary" aria-label="Ver detalle">
+              <mat-icon>shopping_cart_checkout</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
       </div>
 
-      <div class="venta-item" *ngFor="let venta of ventas.slice(0, 5)" [ngClass]="{ 'active': venta.id === '#1001' }">
-        <div class="venta-info">
-          <strong>Venta {{ venta.id }}</strong>
-          <div class="text-muted">{{ venta.fecha }} • {{ venta.vendedor }}</div>
-        </div>
-
-        <div class="venta-detalle">
-          <span>{{ venta.productos }} productos</span>
-          <span class="monto">S/ {{ venta.total.toFixed(2) }}</span>
-          <button mat-icon-button color="primary">
-            <mat-icon>shopping_cart</mat-icon>
-          </button>
-        </div>
-      </div>
-
-      <div class="text-end mt-3">
-        <button mat-stroked-button color="primary">Ver todas</button>
+      <div class="acciones-footer">
+        <button mat-stroked-button color="primary">Ver todas las ventas</button>
       </div>
     </mat-tab>
 
     <!-- TAB: Alertas -->
-    <mat-tab label="Alertas">
-      <p>No hay alertas recientes.</p>
+    <mat-tab label="⚠️ Alertas">
+      <div class="tab-placeholder">
+        <mat-icon color="warn" fontIcon="warning_amber" style="font-size: 3rem;"></mat-icon>
+        <p>No hay alertas recientes.</p>
+      </div>
     </mat-tab>
 
     <!-- TAB: Estadísticas -->
-    <mat-tab label="Estadísticas">
-      <p>Estadísticas no disponibles aún.</p>
+    <mat-tab label="📊 Estadísticas">
+      <div class="tab-placeholder">
+        <mat-icon fontIcon="bar_chart" style="font-size: 3rem;"></mat-icon>
+        <p>Estadísticas no disponibles aún.</p>
+      </div>
     </mat-tab>
+
+    
   </mat-tab-group>
 </div>

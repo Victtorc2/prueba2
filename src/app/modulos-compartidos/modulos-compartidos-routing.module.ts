@@ -6,6 +6,7 @@ import { InventarioComponent } from './inventario/inventario.component';
 import { VentasComponent } from './ventas/ventas.component';
 
 
+
 const routes: Routes = [
   {
     path: '',
@@ -24,4 +25,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class ModulosCompartidosRoutingModule {}
- 
