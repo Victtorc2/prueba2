@@ -4,6 +4,7 @@ import { UsuarioService, Usuario } from 'src/app/modulos/admin/services/usuario.
 
 @Component({
   selector: 'app-usuarios',
+  
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })

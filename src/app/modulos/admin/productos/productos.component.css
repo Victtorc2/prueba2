@@ -1,33 +1,116 @@
-.filtro-input {
-  width: 200px;
+/* Contenedor principal */
+.productos-container {
+  padding: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  min-height: 80vh;
+  box-sizing: border-box;
 }
 
-.mat-elevation-z8 {
-  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 
-              0 8px 10px 1px rgba(0,0,0,.14), 
-              0 3px 14px 2px rgba(0,0,0,.12);
+/* Contenedor de filtros y botón */
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* espacio entre los filtros y el botón */
+  flex-wrap: wrap; /* que en pantallas muy pequeñas se ajusten */
 }
 
-table {
+.filtro-busqueda, .filtro-categoria {
+  flex: 1 1 200px; /* que cada filtro crezca hasta cierto ancho mínimo */
+  min-width: 200px;
+}
+
+.btn-agregar {
+  white-space: nowrap; /* evitar que el texto se parta */
+  height: 40px; /* opcional para que tenga altura similar a los inputs */
+}
+
+
+/* Tabla de productos */
+.tabla-productos {
+  width: 100%;
   border-collapse: separate;
-  border-spacing: 0 8px;
+  border-spacing: 0 10px; /* separación vertical entre filas */
 }
 
-th.mat-header-cell {
-  background-color: #3f51b5;
+/* Encabezados */
+.tabla-productos th.mat-header-cell {
+  background-color: #d22f19;
   color: white;
   font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-radius: 6px 6px 0 0;
+  user-select: none;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
 }
 
-td.mat-cell {
+/* Celdas */
+.tabla-productos td.mat-cell {
   background-color: white;
+  padding: 0.7rem 1rem;
   vertical-align: middle;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 0 0 6px 6px;
 }
 
-button[mat-icon-button] {
-  margin: 0 4px;
+/* Imagen producto */
+.img-producto {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
+
+/* Acciones de edición y eliminación */
+.acciones-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Estilo para la fecha próxima a vencer */
 .fecha-proximo-vencer {
-  color: #d32f2f; /* rojo */
-  font-weight: bold;
+  color: #d32f2f;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Estilo para el mat-icon dentro de fecha próximo a vencer */
+.fecha-proximo-vencer mat-icon {
+  font-size: 18px;
+}
+
+/* Tabs */
+.tabs-productos {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
+  padding: 1rem;
+}
+
+/* Responsive: apilar filtros en pantallas pequeñas */
+@media (max-width: 720px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-agregar {
+    width: 100%;
+  }
+  
+  .filtro-busqueda,
+  .filtro-categoria {
+    max-width: 100%;
+    flex: none;
+  }
+
+  .img-producto {
+    width: 48px;
+    height: 48px;
+  }
 }
