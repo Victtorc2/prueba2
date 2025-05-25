@@ -1,14 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VentasComponent } from './ventas.component';
-import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { VentasRoutingModule } from './ventas-routing.module';
+import { VentasComponent } from './ventas.component';
+
+// Angular Material
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
-  declarations: [VentasComponent],
+  declarations: [
+    VentasComponent
+  ],
   imports: [
     CommonModule,
-    VentasRoutingModule
+    VentasRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+    MatAutocompleteModule
   ]
 })
-export class VentasModule {}
+export class VentasModule { }

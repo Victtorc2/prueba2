@@ -12,6 +12,7 @@ export interface Producto {
   presentacion: string;
   imagen: string;
   fechaVencimiento: string;
+  precio: number;
 }
 
 export interface MovimientoInventario {
@@ -30,8 +31,8 @@ export interface MovimientoInventario {
   providedIn: 'root'
 })
 export class ProductoService {
-  private baseUrl = 'http://localhost:8080/api/inventario';
-  private productosUrl = 'http://localhost:8080/api/productos';
+  private baseUrl = 'http://localhost:8085/api/inventario';
+  private productosUrl = 'http://localhost:8085/api/productos';
 
   constructor(private http: HttpClient) {}
 

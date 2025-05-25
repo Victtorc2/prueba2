@@ -1,1 +1,448 @@
-<p>ventas works!</p>
+<div class="ventas-container">
+  <h1 class="main-title">Gestión de Ventas</h1>
+
+  <div class="tabs-container">
+    <div class="tabs">
+      <div class="tab" [class.active]="tabActual === 'nueva'" (click)="cambiarTab('nueva')">Nueva Venta</div>
+      <div class="tab" [class.active]="tabActual === 'historial'" (click)="cambiarTab('historial')">Historial de Ventas</div>
+      <div class="tab" [class.active]="tabActual === 'estadisticas'" (click)="cambiarTab('estadisticas')">Estadísticas</div>
+    </div>
+  </div>
+
+  <!-- Tab de Nueva Venta -->
+  <div class="tab-content" *ngIf="tabActual === 'nueva'">
+    <div class="venta-grid">
+      <!-- Columna izquierda: Formulario de productos -->
+      <div class="card form-card">
+        <div class="card-header">
+          <h2 class="card-title">Gestión de Ventas</h2>
+          <p class="card-subtitle">Ingrese los productos para registrar una nueva venta</p>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="productoForm">
+            <div class="form-group">
+              <label for="producto">Buscar Producto</label>
+              <div class="search-container">
+                <input 
+                  type="text" 
+                  id="producto" 
+                  formControlName="producto" 
+                  placeholder="Ingrese código o nombre del producto"
+                  [matAutocomplete]="auto"
+                  class="form-control">
+                <span class="search-icon">
+                  <i class="fas fa-search"></i>
+                </span>
+              </div>
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let producto of filteredProductos | async" [value]="producto">
+                  {{producto.nombre}} - S/ {{producto.precio.toFixed(2)}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+
+            <div class="form-group">
+              <label for="cantidad">Cantidad</label>
+              <input 
+                type="number" 
+                id="cantidad" 
+                formControlName="cantidad" 
+                min="1" 
+                placeholder="Ingrese la cantidad"
+                class="form-control">
+            </div>
+
+            <div class="form-actions">
+              <button 
+                class="btn btn-primary" 
+                (click)="agregarProducto()" 
+                [disabled]="!productoForm.valid">
+                <i class="fas fa-cart-plus"></i>
+                Agregar Producto
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Resumen de venta -->
+      <div class="card summary-card">
+        <div class="card-header">
+          <h2 class="card-title">Resumen de Venta</h2>
+          <button class="btn-cart" [disabled]="productosVenta.length === 0">
+            <i class="fas fa-shopping-cart"></i>
+            Cargar Venta
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="summary-content">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span>S/ {{subtotal.toFixed(2)}}</span>
+            </div>
+            <div class="summary-row">
+              <span>Descuento:</span>
+              <span>S/ {{descuento.toFixed(2)}}</span>
+            </div>
+            <div class="summary-row">
+              <span>Impuesto:</span>
+              <span>S/ {{impuesto.toFixed(2)}}</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total:</span>
+              <span>S/ {{total.toFixed(2)}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="payment-section">
+            <h3>Información de Pago</h3>
+            <div class="payment-options">
+              <button 
+                class="btn btn-payment" 
+                (click)="procesarPago('efectivo')" 
+                [disabled]="productosVenta.length === 0 || procesandoPago">
+                <i class="fas fa-money-bill-wave" *ngIf="!procesandoPago"></i>
+                <i class="fas fa-spinner fa-spin" *ngIf="procesandoPago"></i>
+                Efectivo
+              </button>
+              <button 
+                class="btn btn-payment" 
+                (click)="procesarPago('tarjeta')" 
+                [disabled]="productosVenta.length === 0 || procesandoPago">
+                <i class="fas fa-credit-card" *ngIf="!procesandoPago"></i>
+                <i class="fas fa-spinner fa-spin" *ngIf="procesandoPago"></i>
+                Tarjeta
+              </button>
+              <button 
+                class="btn btn-cancel" 
+                (click)="cancelarVenta()" 
+                [disabled]="productosVenta.length === 0">
+                <i class="fas fa-times-circle"></i>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de productos en la venta -->
+    <div class="card productos-card">
+      <div class="card-body">
+        <table class="table productos-table" *ngIf="productosVenta.length > 0">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of productosVenta; let i = index">
+              <td>{{item.producto.nombre}}</td>
+              <td>S/ {{item.producto.precio.toFixed(2)}}</td>
+              <td>{{item.cantidad}}</td>
+              <td>S/ {{(item.producto.precio * item.cantidad).toFixed(2)}}</td>
+              <td>
+                <button class="btn-icon btn-delete" (click)="eliminarProducto(i)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Mensaje cuando no hay productos -->
+        <div class="empty-cart" *ngIf="productosVenta.length === 0">
+          <div class="empty-cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <p class="empty-cart-text">No hay productos</p>
+          <p class="empty-cart-subtitle">Agregue productos para registrar la venta</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab de Historial de Ventas -->
+  <div class="tab-content" *ngIf="tabActual === 'historial'">
+    <div class="historial-container">
+      <!-- Filtros -->
+      <div class="card filters-card">
+        <div class="card-header">
+          <h2 class="card-title">Filtros de Búsqueda</h2>
+        </div>
+        <div class="card-body">
+          <div class="filters-grid">
+            <div class="form-group">
+              <label for="fechaInicio">Fecha Inicio</label>
+              <input type="date" id="fechaInicio" [(ngModel)]="filtros.fechaInicio" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="fechaFin">Fecha Fin</label>
+              <input type="date" id="fechaFin" [(ngModel)]="filtros.fechaFin" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="metodoPago">Método de Pago</label>
+              <select id="metodoPago" [(ngModel)]="filtros.metodoPago" class="form-control">
+                <option value="">Todos</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="montoMinimo">Monto Mínimo</label>
+              <input type="number" id="montoMinimo" [(ngModel)]="filtros.montoMinimo" placeholder="0.00" class="form-control">
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" (click)="aplicarFiltros()">
+              <i class="fas fa-filter"></i>
+              Aplicar Filtros
+            </button>
+            <button class="btn btn-secondary" (click)="limpiarFiltros()">
+              <i class="fas fa-eraser"></i>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de ventas -->
+      <div class="card ventas-table-card">
+        <div class="card-header">
+          <h2 class="card-title">Historial de Ventas</h2>
+          <div class="card-actions">
+            <button class="btn btn-success" (click)="exportarExcel()">
+              <i class="fas fa-file-excel"></i>
+              Exportar Excel
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="loading-indicator" *ngIf="cargandoVentas">
+            <i class="fas fa-spinner fa-spin"></i>
+            Cargando ventas...
+          </div>
+          
+          <div class="table-responsive" *ngIf="!cargandoVentas">
+            <table class="table ventas-history-table">
+              <thead>
+                <tr>
+                  <th>ID Venta</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Total</th>
+                  <th>Método Pago</th>
+                  <th>Productos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let venta of ventasFiltradas">
+                  <td>#{{venta.id}}</td>
+                  <td>{{venta.fecha | date:'dd/MM/yyyy'}}</td>
+                  <td>{{venta.fecha | date:'HH:mm'}}</td>
+                  <td class="amount">S/ {{venta.total.toFixed(2)}}</td>
+                  <td>
+                    <span class="badge" [class.badge-success]="venta.metodoPago.toLowerCase() === 'efectivo'" 
+                          [class.badge-info]="venta.metodoPago.toLowerCase() === 'tarjeta'">
+                      {{venta.metodoPago}}
+                    </span>
+                  </td>
+                  <td>{{venta.productos.length}} item(s)</td>
+                  <td>
+                    <button class="btn-icon btn-view" (click)="verDetalleVenta(venta)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon btn-print" (click)="imprimirVenta(venta)">
+                      <i class="fas fa-print"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Mensaje cuando no hay ventas -->
+          <div class="empty-state" *ngIf="ventasFiltradas.length === 0 && !cargandoVentas">
+            <div class="empty-state-icon">
+              <i class="fas fa-receipt"></i>
+            </div>
+            <p class="empty-state-text">No se encontraron ventas</p>
+            <p class="empty-state-subtitle">Intente ajustar los filtros de búsqueda</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen del período -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="summary-info">
+            <h3>{{resumenPeriodo.totalVentas}}</h3>
+            <p>Total Ventas</p>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="summary-info">
+            <h3>S/ {{resumenPeriodo.montoTotal.toFixed(2)}}</h3>
+            <p>Monto Total</p>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="summary-info">
+            <h3>S/ {{resumenPeriodo.promedioVenta.toFixed(2)}}</h3>
+            <p>Promedio por Venta</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab de Estadísticas -->
+  <div class="tab-content" *ngIf="tabActual === 'estadisticas'">
+    <div class="estadisticas-container">
+      <!-- Métricas principales -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Ventas Hoy</h3>
+            <i class="fas fa-calendar-day"></i>
+          </div>
+          <div class="metric-value">{{estadisticas.ventasHoy}}</div>
+        </div>
+        
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Ingresos Hoy</h3>
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="metric-value">S/ {{estadisticas.ingresosHoy.toFixed(2)}}</div>
+        </div>
+        
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Ventas del Mes</h3>
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="metric-value">{{estadisticas.ventasMes}}</div>
+        </div>
+        
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Ingresos del Mes</h3>
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="metric-value">S/ {{estadisticas.ingresosMes.toFixed(2)}}</div>
+        </div>
+      </div>
+
+      <!-- Gráficos y análisis -->
+      <div class="charts-grid">
+        <!-- Ventas por método de pago -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h2 class="card-title">Ventas por Método de Pago</h2>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <div class="pie-chart">
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span class="legend-color efectivo"></span>
+                    <span>Efectivo ({{estadisticas.ventasPorMetodo.efectivo}}%)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color tarjeta"></span>
+                    <span>Tarjeta ({{estadisticas.ventasPorMetodo.tarjeta}}%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productos más vendidos -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h2 class="card-title">Productos Más Vendidos</h2>
+          </div>
+          <div class="card-body">
+            <div class="top-products">
+              <div class="product-item" *ngFor="let producto of estadisticas.productosMasVendidos; let i = index">
+                <div class="product-rank">{{i + 1}}</div>
+                <div class="product-info">
+                  <h4>{{producto.nombre}}</h4>
+                  <p>{{producto.cantidadVendida}} unidades vendidas</p>
+                </div>
+                <div class="product-revenue">
+                  S/ {{producto.ingresos.toFixed(2)}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para detalle de venta -->
+  <div class="modal-overlay" *ngIf="mostrarDetalleVenta" (click)="cerrarDetalleVenta()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Detalle de Venta #{{ventaSeleccionada?.id}}</h2>
+        <button class="btn-close" (click)="cerrarDetalleVenta()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="ventaSeleccionada">
+        <div class="venta-info">
+          <div class="info-row">
+            <span>Fecha:</span>
+            <span>{{ventaSeleccionada.fecha | date:'dd/MM/yyyy HH:mm'}}</span>
+          </div>
+          <div class="info-row">
+            <span>Método de Pago:</span>
+            <span>{{ventaSeleccionada.metodoPago}}</span>
+          </div>
+          <div class="info-row">
+            <span>Total:</span>
+            <span class="amount">S/ {{ventaSeleccionada.total.toFixed(2)}}</span>
+          </div>
+        </div>
+        
+        <h3>Productos</h3>
+        <table class="table modal-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of ventaSeleccionada.productos">
+              <td>{{item.producto.nombre}}</td>
+              <td>S/ {{item.producto.precio.toFixed(2)}}</td>
+              <td>{{item.cantidad}}</td>
+              <td>S/ {{item.subtotal.toFixed(2)}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
