@@ -15,9 +15,9 @@ export class EmpleadoGuard implements CanActivate {
 
   console.log('EmpleadoGuard - loggedIn:', loggedIn, 'role:', role);
 
-  if (loggedIn && role === 'EMPLEADO') {
-    return true;
-  } else {
+  if (loggedIn && (role === 'EMPLEADO' || role === 'ADMIN')) {
+  return true;
+} else {
     this.router.navigate(['/login']);
     return false;
   }

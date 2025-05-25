@@ -8,7 +8,7 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
   // Ruta base sin duplicar el /login
-  private apiUrl = 'http://localhost:8080/auth/login';
+  private apiUrl = 'http://localhost:8085/auth/login';
 
   constructor(private http: HttpClient, private router: Router) {}
 
