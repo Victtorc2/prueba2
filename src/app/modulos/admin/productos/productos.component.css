@@ -6,23 +6,27 @@
   min-height: 80vh;
   box-sizing: border-box;
 }
-
 /* Contenedor de filtros y botón */
 .filtros {
   display: flex;
   align-items: center;
-  gap: 1rem; /* espacio entre los filtros y el botón */
-  flex-wrap: wrap; /* que en pantallas muy pequeñas se ajusten */
+  gap: 1rem;
+  flex-wrap: nowrap; /* no queremos que se rompa la línea */
+  justify-content: flex-start;
 }
 
-.filtro-busqueda, .filtro-categoria {
-  flex: 1 1 200px; /* que cada filtro crezca hasta cierto ancho mínimo */
-  min-width: 200px;
+/* Reducir el ancho de cada filtro para que sean más pequeños */
+.filtros > mat-form-field {
+  flex: 0 0 auto;    /* que no crezcan ni encojan */
+  width: 
+  300px;      /* ancho fijo pequeño para los filtros */
 }
 
+/* Botón alineado a la derecha */
 .btn-agregar {
   white-space: nowrap; /* evitar que el texto se parta */
-  height: 40px; /* opcional para que tenga altura similar a los inputs */
+  height: 40px;        /* altura similar a los inputs */
+  margin-left: auto;   /* empuja el botón al extremo derecho */
 }
 
 

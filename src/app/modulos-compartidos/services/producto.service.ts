@@ -14,7 +14,6 @@ imagenUrl: any;
   presentacion: string;
   imagen: string;
   fechaVencimiento: string;
-  precio: number;
 }
 
 export interface MovimientoInventario {
@@ -35,33 +34,33 @@ export interface MovimientoInventario {
   providedIn: 'root'
 })
 export class ProductoService {
-  private baseUrl = 'http://localhost:8085/api/inventario';
-  private productosUrl = 'http://localhost:8085/api/productos';
+  private apiUrl = 'http://localhost:8080/api/inventario';
+  private productosUrl = 'http://localhost:8080/api/productos';
 
   constructor(private http: HttpClient) { }
 
   registrarMovimiento(movimiento: MovimientoInventario): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, movimiento);
+    return this.http.post(`${this.apiUrl}`, movimiento);
   }
 
   listarMovimientos(): Observable<MovimientoInventario[]> {
-    return this.http.get<MovimientoInventario[]>(`${this.baseUrl}`);
+    return this.http.get<MovimientoInventario[]>(`${this.apiUrl}`);
   }
 
   filtrarPorCategoria(nombreCategoria: string): Observable<MovimientoInventario[]> {
-    return this.http.get<MovimientoInventario[]>(`${this.baseUrl}/categoria/${nombreCategoria}`);
+    return this.http.get<MovimientoInventario[]>(`${this.apiUrl}/categoria/${nombreCategoria}`);
   }
 
   listarStockBajo(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.baseUrl}/stock-bajo`);
+    return this.http.get<Producto[]>(`${this.apiUrl}/stock-bajo`);
   }
 
   listarProximosVencimientos(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.baseUrl}/proximos-a-vencer`);
+    return this.http.get<Producto[]>(`${this.apiUrl}/proximos-a-vencer`);
   }
 
   listarCategorias(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/categorias`);
+    return this.http.get<string[]>(`${this.apiUrl}/categorias`);
   }
 
   listarProductos(): Observable<Producto[]> {

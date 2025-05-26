@@ -8,7 +8,7 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
   // Ruta base sin duplicar el /login
-  private apiUrl = 'http://localhost:8085/auth/login';
+  private apiUrl = 'http://localhost:8080/auth/login';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -62,4 +62,22 @@ export class AuthService {
   // Puedes agregar aquí una validación extra de expiración si quieres
   return !!token; 
 }
+getUserId(): number | null {
+  const token = this.getToken();
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Si el token contiene 'userId', lo extraemos aquí
+    return payload.userId ? +payload.userId : null;  // Cambié 'sub' a 'userId' aquí
+  } catch (error) {
+    console.error('Error al decodificar token JWT', error);
+    return null;
+  }
 }
+
+
+
+
+}
+

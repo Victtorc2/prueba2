@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { map, startWith, debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductoService, Producto } from '../services/producto.service';
 import { VentaService, VentaRequestDTO, VentaResponseDTO, EstadisticasVentaDTO } from '../services/ventas.service';
+import { AuthService } from '../../core/services/auth.service'; // Asegúrate de tener tu servicio de autenticación importado
 
 interface ItemVenta {
   producto: Producto;
@@ -29,17 +30,13 @@ interface ResumenPeriodo {
   styleUrls: ['./ventas.component.css']
 })
 export class VentasComponent implements OnInit {
-  // Tab actual
   tabActual: 'nueva' | 'historial' | 'estadisticas' = 'nueva';
-  
-  // Formulario reactivo
+
   productoForm: FormGroup;
-  
-  // Productos
+
   productos: Producto[] = [];
   filteredProductos!: Observable<Producto[]>;
-  
-  // Venta actual
+
   productosVenta: ItemVenta[] = [];
   subtotal: number = 0;
   descuento: number = 0;
@@ -47,7 +44,6 @@ export class VentasComponent implements OnInit {
   total: number = 0;
   readonly TASA_IMPUESTO: number = 0.18;
 
-  // Historial
   ventas: VentaResponseDTO[] = [];
   ventasFiltradas: VentaResponseDTO[] = [];
   filtros: Filtros = {
@@ -62,11 +58,9 @@ export class VentasComponent implements OnInit {
     promedioVenta: 0
   };
 
-  // Modal
   mostrarDetalleVenta: boolean = false;
   ventaSeleccionada: VentaResponseDTO | null = null;
 
-  // Estadísticas
   estadisticas: EstadisticasVentaDTO = {
     ventasHoy: 0,
     ingresosHoy: 0,
@@ -76,7 +70,6 @@ export class VentasComponent implements OnInit {
     productosMasVendidos: []
   };
 
-  // Estados de carga
   cargandoProductos: boolean = false;
   cargandoVentas: boolean = false;
   procesandoPago: boolean = false;
@@ -84,7 +77,8 @@ export class VentasComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productoService: ProductoService,
-    private ventaService: VentaService
+    private ventaService: VentaService,
+    private authService: AuthService  // Servicio para obtener usuario autenticado
   ) {
     this.productoForm = this.fb.group({
       producto: [null, Validators.required],
@@ -127,10 +121,10 @@ export class VentasComponent implements OnInit {
 
   filtrarProductos(nombre: string): Producto[] {
     if (!nombre) return this.productos.slice(0, 10);
-    
+
     const filterValue = nombre.toLowerCase();
-    return this.productos.filter(producto => 
-      producto.nombre.toLowerCase().includes(filterValue) || 
+    return this.productos.filter(producto =>
+      producto.nombre.toLowerCase().includes(filterValue) ||
       producto.codigo.toLowerCase().includes(filterValue)
     ).slice(0, 10);
   }
@@ -141,7 +135,7 @@ export class VentasComponent implements OnInit {
 
   cambiarTab(tab: 'nueva' | 'historial' | 'estadisticas'): void {
     this.tabActual = tab;
-    
+
     if (tab === 'historial') {
       this.cargarHistorialVentas();
     } else if (tab === 'estadisticas') {
@@ -153,14 +147,14 @@ export class VentasComponent implements OnInit {
     if (this.productoForm.valid) {
       const producto = this.productoForm.get('producto')!.value;
       const cantidad = this.productoForm.get('cantidad')!.value;
-      
+
       if (producto.stock < cantidad) {
         alert(`Stock insuficiente. Stock disponible: ${producto.stock}`);
         return;
       }
-      
+
       const index = this.productosVenta.findIndex(item => item.producto.id === producto.id);
-      
+
       if (index !== -1) {
         const cantidadTotal = this.productosVenta[index].cantidad + cantidad;
         if (producto.stock < cantidadTotal) {
@@ -171,7 +165,7 @@ export class VentasComponent implements OnInit {
       } else {
         this.productosVenta.push({ producto, cantidad });
       }
-      
+
       this.calcularTotales();
       this.productoForm.patchValue({
         producto: null,
@@ -193,34 +187,43 @@ export class VentasComponent implements OnInit {
     this.total = this.subtotal + this.impuesto - this.descuento;
   }
 
-  procesarPago(metodoPago: 'efectivo' | 'tarjeta'): void {
-    if (this.productosVenta.length === 0) return;
+procesarPago(metodoPago: 'efectivo' | 'tarjeta'): void {
+  if (this.productosVenta.length === 0) return;
 
-    const ventaRequest: VentaRequestDTO = {
-      productos: this.productosVenta.map(item => ({
-        productoId: item.producto.id!,
-        cantidad: item.cantidad
-      })),
-      metodoPago: metodoPago.toUpperCase(),
-      descuento: this.descuento
-    };
+  const usuarioId = this.authService.getUserId(); // Obtener el id del usuario desde el token
 
-    this.procesandoPago = true;
-    this.ventaService.registrarVenta(ventaRequest).subscribe({
-      next: (response) => {
-        this.procesandoPago = false;
-        alert(`Venta procesada con éxito mediante ${metodoPago}. Total: S/ ${response.total.toFixed(2)}`);
-        this.cancelarVenta();
-        this.cargarHistorialVentas();
-        this.cargarEstadisticas();
-      },
-      error: (error) => {
-        this.procesandoPago = false;
-        console.error('Error al procesar la venta:', error);
-        alert('Error al procesar la venta. Por favor, intente nuevamente.');
-      }
-    });
+  if (!usuarioId) {
+    alert('Usuario no autenticado');
+    return;
   }
+
+  const ventaRequest: VentaRequestDTO = {
+    usuarioId: usuarioId,  // Asignar el usuarioId al request
+    detalles: this.productosVenta.map(item => ({
+      productoId: item.producto.id!,
+      cantidad: item.cantidad
+    })),
+    metodoPago: metodoPago.toUpperCase(),
+    descuento: this.descuento
+  };
+
+  this.procesandoPago = true;
+  this.ventaService.registrarVenta(ventaRequest).subscribe({
+    next: (response) => {
+      this.procesandoPago = false;
+      alert(`Venta procesada con éxito mediante ${metodoPago}. Total: S/ ${response.total.toFixed(2)}`);
+      this.cancelarVenta();
+      this.cargarHistorialVentas();
+      this.cargarEstadisticas();
+    },
+    error: (error) => {
+      this.procesandoPago = false;
+      console.error('Error al procesar la venta:', error);
+      alert('Error al procesar la venta. Por favor, intente nuevamente.');
+    }
+  });
+}
+
 
   cancelarVenta(): void {
     this.productosVenta = [];
@@ -231,50 +234,55 @@ export class VentasComponent implements OnInit {
     });
   }
 
-  cargarHistorialVentas(): void {
-    this.cargandoVentas = true;
-    this.ventaService.obtenerHistorial().subscribe({
-      next: (ventas) => {
-        this.ventas = ventas;
-        this.aplicarFiltros();
-        this.cargandoVentas = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar historial:', error);
-        this.cargandoVentas = false;
-      }
-    });
-  }
+cargarHistorialVentas(): void {
+  this.cargandoVentas = true;
+  this.ventaService.obtenerHistorial().subscribe({
+    next: (ventas) => {
+      console.log('Ventas recibidas:', ventas);  // Verificar qué datos se están recibiendo
+      this.ventas = ventas;
+   this.aplicarFiltros();  
+      this.cargandoVentas = false;
+    },
+    error: (error) => {
+      console.error('Error al cargar historial:', error);
+      this.cargandoVentas = false;
+    }
+  });
+}
 
-  aplicarFiltros(): void {
-    this.ventasFiltradas = this.ventas.filter(venta => {
-      let cumpleFiltros = true;
-      const fechaVenta = new Date(venta.fecha);
 
-      if (this.filtros.fechaInicio) {
-        const fechaInicio = new Date(this.filtros.fechaInicio);
-        cumpleFiltros = cumpleFiltros && fechaVenta >= fechaInicio;
-      }
 
-      if (this.filtros.fechaFin) {
-        const fechaFin = new Date(this.filtros.fechaFin);
-        fechaFin.setHours(23, 59, 59, 999);
-        cumpleFiltros = cumpleFiltros && fechaVenta <= fechaFin;
-      }
+aplicarFiltros(): void {
+  this.ventasFiltradas = this.ventas.filter(venta => {
+    let cumpleFiltros = true;
+    const fechaVenta = new Date(venta.fecha);
 
-      if (this.filtros.metodoPago) {
-        cumpleFiltros = cumpleFiltros && venta.metodoPago.toLowerCase() === this.filtros.metodoPago;
-      }
+    if (this.filtros.fechaInicio) {
+      const fechaInicio = new Date(this.filtros.fechaInicio);
+      cumpleFiltros = cumpleFiltros && fechaVenta >= fechaInicio;
+    }
 
-      if (this.filtros.montoMinimo > 0) {
-        cumpleFiltros = cumpleFiltros && venta.total >= this.filtros.montoMinimo;
-      }
+    if (this.filtros.fechaFin) {
+      const fechaFin = new Date(this.filtros.fechaFin);
+      fechaFin.setHours(23, 59, 59, 999);
+      cumpleFiltros = cumpleFiltros && fechaVenta <= fechaFin;
+    }
 
-      return cumpleFiltros;
-    });
+    if (this.filtros.metodoPago) {
+      cumpleFiltros = cumpleFiltros && venta.metodoPago.toLowerCase() === this.filtros.metodoPago.toLowerCase();
+    }
 
-    this.calcularResumenPeriodo();
-  }
+    if (this.filtros.montoMinimo > 0) {
+      cumpleFiltros = cumpleFiltros && venta.total >= this.filtros.montoMinimo;
+    }
+
+    return cumpleFiltros;
+  });
+
+  this.calcularResumenPeriodo();
+}
+
+
 
   limpiarFiltros(): void {
     this.filtros = {
@@ -289,8 +297,8 @@ export class VentasComponent implements OnInit {
   calcularResumenPeriodo(): void {
     this.resumenPeriodo.totalVentas = this.ventasFiltradas.length;
     this.resumenPeriodo.montoTotal = this.ventasFiltradas.reduce((sum, venta) => sum + venta.total, 0);
-    this.resumenPeriodo.promedioVenta = this.resumenPeriodo.totalVentas > 0 
-      ? this.resumenPeriodo.montoTotal / this.resumenPeriodo.totalVentas 
+    this.resumenPeriodo.promedioVenta = this.resumenPeriodo.totalVentas > 0
+      ? this.resumenPeriodo.montoTotal / this.resumenPeriodo.totalVentas
       : 0;
   }
 

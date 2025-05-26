@@ -41,19 +41,21 @@ export class InventarioComponent implements OnInit {
     this.cargarDatosIniciales();
   }
 
-cargarDatosIniciales(): void {
-  this.productoService.listarProductos().subscribe({
-    next: (productos) => {
-      this.productos = productos;
-    },
-    error: (err) => console.error('Error al cargar productos', err)
-  });
-
+  cargarDatosIniciales(): void {
+    // Primero cargamos productos para el select y demás usos
+    this.productoService.listarProductos().subscribe({
+      next: (productos) => {
+        this.productos = productos;
+        // Después de cargar productos, cargamos movimientos para asegurar relación producto-movimiento
+        this.cargarMovimientos();
+      },
+      error: (err) => console.error('Error al cargar productos', err)
+    });
   this.cargarMovimientos();
-  this.cargarCategorias();
-  this.cargarProductosProximosVencer();
-  this.cargarProductosBajoStock();
-}
+    this.cargarCategorias();
+    this.cargarProductosProximosVencer();
+    this.cargarProductosBajoStock();
+  }
 
   cargarMovimientos(): void {
     this.productoService.listarMovimientos().subscribe({
@@ -62,8 +64,7 @@ cargarDatosIniciales(): void {
           ...mov,
           productoNombre: mov.productoNombre || 'Sin nombre',
           categoria: mov.categoria || 'Sin categoría',
-          precio: mov.precio, // deja el número como está, aunque sea undefined
-
+          precio: mov.precio ?? 0
         }));
         this.aplicarFiltro();
       },
@@ -102,6 +103,7 @@ cargarDatosIniciales(): void {
       fecha: [new Date().toISOString().substring(0, 10), Validators.required]
     });
 
+    // Cuando cambie el productoId en el formulario, actualizar productoSeleccionado
     this.formularioEdicion.get('productoId')?.valueChanges.subscribe(id => {
       this.productoSeleccionado = this.productos.find(p => p.id === id) || null;
     });
@@ -156,8 +158,7 @@ cargarDatosIniciales(): void {
       productoId: this.productoSeleccionado.id!,
       productoNombre: this.productoSeleccionado.nombre,
       categoria: this.productoSeleccionado.categoria,
-      precio: this.productoSeleccionado.precio
-
+      precio: this.productoSeleccionado.precio ?? 0
     };
 
     this.productoService.registrarMovimiento(movimiento).subscribe({
@@ -166,7 +167,6 @@ cargarDatosIniciales(): void {
         this.cancelarEdicion();
         this.cargarDatosIniciales();
       },
-      
       error: (err) => console.error('Error al guardar movimiento', err)
     });
   }

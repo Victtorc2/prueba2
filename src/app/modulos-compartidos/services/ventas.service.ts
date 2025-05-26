@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface VentaRequestDTO {
-  productos: Array<{
+  usuarioId?: number; // Opcional según backend
+  detalles: Array<{
     productoId: number;
     cantidad: number;
   }>;
   metodoPago: string;
   descuento?: number;
 }
+
+
 
 export interface VentaResponseDTO {
   id: number;
@@ -46,7 +49,7 @@ export interface EstadisticasVentaDTO {
   providedIn: 'root'
 })
 export class VentaService {
-  private apiUrl = 'http://localhost:8085/api/ventas';
+  private apiUrl = 'http://localhost:8080/api/ventas';
 
   constructor(private http: HttpClient) {}
 
